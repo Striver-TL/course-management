@@ -1,0 +1,24 @@
+.course-select {
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+
+    .select-screen,
+    .select-content {
+        padding: 20px;
+        border: 1px solid #efefef;
+    }
+
+    .select-screen {
+        .searchbar {
+            padding-left: 20px;
+        }
+    }
+
+    .select-content {
+        margin: 20px 0;
+        flex: 1 1 auto;
+        overflow-y: auto;
+    }
+
+}

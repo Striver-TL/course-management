@@ -1,0 +1,16 @@
+.home-content {
+    padding: 20px;
+    margin-left: 20px;
+    min-height: 100%;
+    background: #fff;
+
+    .home-content-inner {
+        overflow: auto;
+        width: 100%;
+        height: 100%;
+
+        &>div {
+            min-width: 950px;
+        }
+    }
+}

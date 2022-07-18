@@ -1,0 +1,17 @@
+$avater-size: 80px;
+
+.card {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.ant-avatar {
+    width: $avater-size !important;
+    height: $avater-size !important;
+}
+
+.card-space {
+    width: 100%;
+    padding: 5px 10px;
+    font-size: 12px;
+}
