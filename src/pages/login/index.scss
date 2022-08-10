@@ -1,9 +1,39 @@
+@media screen and (min-device-width: 768px) {
+    .login {
+        max-width: 550px;
+        padding: 50px;
+        margin: 0 auto;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+}
+
+@media screen and (max-device-width: 768px) {
+    .login {
+        width: 100%;
+        padding: 1rem;
+
+        .form {
+            padding: 0 .75rem;
+        }
+        
+        .title {
+            font-size: 1.5em;
+        }
+    }
+}
+
 .login {
-    max-width: 550px;
-    padding: 50px;
-    margin: 0 auto;
     .content {
         background: #efefef;
         border-radius: 0 0 5px 5px;
+        
+    }
+
+    .title {
+        font-weight: normal;
+        color: #333;
     }
 }

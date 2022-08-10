@@ -2,13 +2,13 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 17:02:34
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-07-18 11:35:35
+ * @LastEditTime: 2022-07-28 09:57:04
  * @FilePath: \student-performance\src\pages\home\course-select\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { Component } from 'react'
 // import { Empty } from 'antd'
-import { Row, Col, Select, Button, Collapse, Space, Tag, List, Modal, Drawer } from 'antd'
+import { Row, Col, Select, Button, Collapse, Space, Tag, List, Modal, Drawer, Empty } from 'antd'
 import { ClockCircleOutlined, UserOutlined, EnvironmentOutlined } from '@ant-design/icons'
 import PubSub from 'pubsub-js'
 // Component
@@ -47,7 +47,9 @@ class CourseSelectScreen extends Component {
       // 是否正在查看已选课程
       isLookingChecked: false,
       // 
-      loadingFilter: true
+      loadingFilter: true,
+      // 是否正在选课
+      loadingSelect: false
     }
     // 为方法绑定this
     this.toLookChecked = this.toLookChecked.bind(this)
@@ -101,9 +103,17 @@ class CourseSelectScreen extends Component {
   // 筛选选择框值改变时触发
   createOnChange(selectKey) {
     return value => {
+      this.setState({
+        loadingFilter: true
+      })
       PubSub.publish(filterKeys.FILTER_COURSE_DATA, {
         key: selectKey,
-        value
+        value,
+        callback: () => {
+          this.setState({
+            loadingFilter: false
+          })
+        }
       })
     }
   }
@@ -173,6 +183,26 @@ class CourseSelectScreen extends Component {
 class CourseSelectContent extends Component {
   constructor(props) {
     super(props)
+    // 课程原数据（不展示在试图上）
+    this.courseData = []
+    // 课程信息原数据（不展示在试图上）
+    this.courseInfos = []
+    this.state = {
+      showCourseData: [],
+      showCourseInfos: [],
+      selectedCourses: []
+    }
+    // 订阅数据筛选
+    PubSub.subscribe(filterKeys.FILTER_COURSE_DATA, this.filterCourseInfo.bind(this))
+  }
+
+  componentDidMount() {
+    this.flashCourseData()
+  }
+
+  // 数据刷新方法
+  flashCourseData = () => {
+    // const requestAll = Promise.all([])
     this.courseData = [
       {
         cno: "1",
@@ -236,36 +266,58 @@ class CourseSelectContent extends Component {
         }]
       }
     ]
-    this.state = {
+
+    this.setState({
       showCourseData: this.courseData.map(course => new Course(course)),
-      showCourseInfos: this.courseInfos.map(courseInfo => new CoursePlan(courseInfo))
+      showCourseInfos: this.courseInfos.map(courseInfo => new CoursePlan(courseInfo)),
+      selectedCourses: []
+    })
+  } 
+
+  // 筛选课程数据的方法
+  // 将筛选数据预存起来，根据预存的筛选数据进行数据筛选
+  filterCourseInfo = (() => {
+    // 存储数据筛选数据
+    const filterValues = {
+      [filterKeys.FILTER_BY_TYPE]: "all",
+      [filterKeys.FILTER_BY_REQUIRED]: "all",
+      [filterKeys.FILTER_BY_DAY]: "all"
     }
-
-    PubSub.subscribe(filterKeys.FILTER_COURSE_DATA, this.filterCourseInfo.bind(this))
-  }
-
-  filterCourseInfo(_, data) {
-    const { FILTER_BY_TYPE, FILTER_BY_DAY, FILTER_BY_REQUIRED } = filterKeys
-    switch(data.key) {
-      case FILTER_BY_TYPE: 
-        this.setState({
-          showCourseData: this.courseData.filter(item => item.type === data.value).map(item => new Course(item))
-        })
-        break;
-      case FILTER_BY_REQUIRED:
-        this.setState({
-          showCourseData: this.courseData.filter(item => item.required = data.value).map(item => new Course(item))
-        })
-        break;
-      case FILTER_BY_DAY:
-        this.setState({
-          showCourseInfos: this.courseInfos.filter(courseInfo => courseInfo.plan.some(item => item.day === data.value)).map(item => new CoursePlan(item))
-        })
+    return (_, data) => {
+      // 替换传入的筛选数据
+      filterValues[data.key] = data.value
+      const { FILTER_BY_DAY, FILTER_BY_TYPE, FILTER_BY_REQUIRED } = filterKeys
+      let filterCourseInfo = this.courseInfos
+      // 根据日期过滤数据
+      filterValues[FILTER_BY_DAY] !== "all" && (filterCourseInfo = filterCourseInfo.filter(courseInfo => courseInfo.plan.some(item => item.day === filterValues[FILTER_BY_DAY])))
+      // 获取所有课程数据并且根据日期过滤
+      let filterCourseData = this.courseData.filter(item => filterCourseInfo.filter(courseInfo => courseInfo.cno === item.cno).length)
+      // 根据课程类型过滤数据
+      filterValues[FILTER_BY_TYPE] !== "all" && (filterCourseData = filterCourseData.filter(
+        item => item.type === filterValues[FILTER_BY_TYPE]
+      ))
+      // 根据课程性质过滤数据
+      filterValues[FILTER_BY_REQUIRED] !== "all" && (filterCourseData = filterCourseData.filter(
+        item => item.required === filterValues[FILTER_BY_REQUIRED]
+      ))
+      this.setState({
+        showCourseData: filterCourseData.map(course => new Course(course)),
+        showCourseInfos: filterCourseInfo.map(courseInfo => new CoursePlan(courseInfo))
+      })
+      data.callback()
     }
-  }
+  })()
 
-  componentDidUpdate() {
-    console.log(this.state.showCourseInfos)
+  // 选课方法
+  selectCourse = (aid) => {
+    this.setState({
+      loadingSelect: true
+    })
+    setTimeout(() => {
+      this.setState({
+        loadingSelect: false
+      })
+    }, 1000)
   }
 
   showTeacherInfo(aid) {
@@ -279,6 +331,9 @@ class CourseSelectContent extends Component {
   }
 
   render() {
+    const { showCourseData } = this.state
+
+    if (!this.courseData.length) return <Empty description="暂无选课数据" />
     const listItemFunc = info => (
       <List.Item key={info.aid}>
         <Row justify='space-around' align="middle" style={{
@@ -330,13 +385,13 @@ class CourseSelectContent extends Component {
             <span>已选：{info.count}/{info.maxCount}</span>
             {info.count >= info.maxCount ? <Tag color="red">已满</Tag> : <Tag color="cyan">未满</Tag>}</Col>
           <Col>
-            <Button type="ghost" >选课</Button>
+            <Button type="ghost" onClick={this.selectCourse} loading={this.state.loadingSelect} disabled={this.state.loadingSelect}>选课</Button>
             {/* <Button type="ghost" danger>退选</Button> */}
           </Col>
         </Row>
       </List.Item>
     )
-    const panels = this.state.showCourseData.map(
+    const panels = showCourseData.length ? <Collapse>{showCourseData.map(
       (course) => {
         const { cno, cname, credit, required, type } = course;
         return <Panel key={cno} header={
@@ -370,11 +425,11 @@ class CourseSelectContent extends Component {
           </List>
         </Panel>
       }
-    )
+    )}</Collapse> : <Empty style={{
+      margin: "50px"
+    }} description="没有找到符合筛选条件的课程" />
     return (<>
-      <Collapse>
-        {panels}
-      </Collapse>
+      {panels}
     </>)
   }
 }
