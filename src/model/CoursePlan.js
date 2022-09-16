@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-16 18:31:07
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-07-18 11:45:01
+ * @LastEditTime: 2022-09-05 10:52:50
  * @FilePath: \student-performance\src\model\js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,24 +10,12 @@
 const coursePlanKeys = {
     // 排课编号
     aid: "aid",
-    // 课程编号
-    cno: "cno",
-    // 课程名字
-    cname: "cname",
-    // 教师编号
-    tno: "tno",
-    // 教师名字
-    tname: "tname",
-    // 课程起始周
-    weekStart: "week_start",
-    // 课程结束周,
-    weekEnd: "week_end",
-    // 课程安排
-    plan: "plan",
-    // 已选人数
-    count: "count",
-    // 最大人数
-    maxCount: "count_max"
+    // 教室编号
+    cid: "cid",
+    // 上课节
+    section: "section",
+    // 上课天
+    day: "day"
 }
 
 // 上课小节数
@@ -48,18 +36,7 @@ class CoursePlan {
     constructor(option) {
         // 将传入的源数据保存到实例对象中
         for (let key in coursePlanKeys) {
-            const data = option[coursePlanKeys[key]]
-            if (data) this[key] = data
-        }
-        const type = Object.prototype.toString.call(this.plan)
-        if (type === "[object Array]") {
-            this.plan = this.plan.map(item => {
-                const obj = {}
-                Object.assign(obj, item)
-                obj.day = week[item.day]
-                obj.section = section[item.section]
-                return obj
-            })
+            this[key] = option[coursePlanKeys[key]]
         }
     }
 }

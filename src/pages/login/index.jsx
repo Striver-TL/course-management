@@ -2,17 +2,16 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-13 20:54:12
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-07-30 14:13:21
+ * @LastEditTime: 2022-08-19 10:34:48
  * @FilePath: \student-performance\src\pages\login\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, Menu, Space, Alert } from 'antd'
 import { useNavigate } from 'react-router'
 
-import RoutePath from '../../model/RoutePath'
 import UserType from '../../model/UserType';
-import store from '../../redux/store'
+import { actionTypes, store } from '../../redux/store';
 
 import './index.scss'
 const userKeys = Object.keys(UserType.USER_TYPES).reverse()
@@ -31,13 +30,6 @@ const items = [{
 const Login = () => {
     // 路由跳转函数
     const navigate = useNavigate()
-    useEffect(() => {
-        // 先判断是否已经登录
-        const loginUser = localStorage.getItem("loginUser")
-        loginUser && navigate(`/home/${RoutePath.HOME}`, {
-            replace: true
-        })
-    })
 
     // 创建账号状态
     const [username, setUsername] = useState("")
@@ -98,9 +90,8 @@ const Login = () => {
                         username,
                         type: selectType
                     }
-                    localStorage.setItem("loginUser", JSON.stringify(user))
-                    store.loginUser.dispatch({
-                        type: "string",
+                    store.dispatch({
+                        type: actionTypes.LOGIN_USER,
                         data: user
                     })
                     navigate(`/home`, {

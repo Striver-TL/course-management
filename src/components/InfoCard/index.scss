@@ -5,6 +5,10 @@ $avater-size: 80px;
     margin: 0 auto;
 }
 
+.card > .ant-card-body {
+    padding-bottom: 0 !important;
+}
+
 .ant-avatar {
     width: $avater-size !important;
     height: $avater-size !important;

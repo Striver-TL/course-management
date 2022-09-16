@@ -2,14 +2,14 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 19:44:06
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-08-05 19:05:58
+ * @LastEditTime: 2022-09-07 23:38:45
  * @FilePath: \student-performance\src\pages\home\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Routes, Route } from 'react-router-dom'
-import { Layout, Row, Col, Avatar, Dropdown, Space, Menu, Modal } from 'antd'
+import { Layout, Row, Col, Avatar, Dropdown, Space, Menu, Modal, Spin, Alert } from 'antd'
 import { UserOutlined, DownOutlined } from '@ant-design/icons'
 import MyMenu from '@/components/MyMenu'
 import RouteComponent from "@/router/routes"
@@ -24,7 +24,6 @@ function QuitLogin() {
       return RequestLogin.default.cancelLogin()
     }).then(({ data }) => {
       if (data.success) {
-        localStorage.removeItem("loginUser")
         navigate("/login", {
           replace: true
         })
@@ -47,9 +46,29 @@ function QuitLogin() {
   </>
 }
 
+// 加载核心内容组件
 export default function Home() {
+  const [loading, setLoading] = useState(true)
+  const [flag, setFlag] = useState(false)
+  const [count, setCount] = useState(0)
+  loading && import("@/core")
+    .then(module => {
+      const { install } = module
+      const thenFunc = () => {
+        setCount(count + 1)
+      }
+      install(thenFunc, () => setFlag(false), () => setFlag(true))
+    })
+    .finally(() => {
+      setLoading(false)
+    })
+  if (loading) return <>
+    <Spin tip="加载中..." />
+  </>
+  else if (!flag) return <>
+    <Alert type="error" message="加载核心数据失败" />
+  </>
   // 路由处理
-
   const menu = (
     <Menu items={[{
       key: "0",

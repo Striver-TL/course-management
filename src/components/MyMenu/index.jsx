@@ -2,19 +2,18 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 21:03:47
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-08-06 15:24:44
+ * @LastEditTime: 2022-09-16 14:34:06
  * @FilePath: \student-performance\src\components\MyMenu\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { Menu } from 'antd'
-import { UserOutlined, ReconciliationOutlined, BankOutlined, BarChartOutlined, FormOutlined, ScheduleOutlined, LoadingOutlined, HomeOutlined, EditOutlined, SelectOutlined } from '@ant-design/icons'
+import { ReconciliationOutlined, DatabaseOutlined, BarChartOutlined, FormOutlined, ScheduleOutlined, LoadingOutlined, HomeOutlined, EditOutlined, SelectOutlined } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router'
 
-import UserType from "@/model/UserType"
 import './index.scss'
 import RoutePath from '../../model/RoutePath'
-import { useState, useEffect } from 'react'
-import store from "@/redux/store"
+import { store } from "@/redux/store"
+import { useState } from 'react'
 /**
  * 用于生成菜单项数据对象
  * @param { String } key 菜单项的唯一key 
@@ -29,10 +28,16 @@ function setItem(key, label, icon, children) {
 
 const menuItems = {
   [RoutePath.HOME]: setItem(RoutePath.HOME, "主页", <HomeOutlined />),
-  [RoutePath.TEACHER_MANAGEMENT]: setItem(RoutePath.TEACHER_MANAGEMENT, "教师管理", <UserOutlined />),
-  [RoutePath.STUDENT_MANAGEMENT]: setItem(RoutePath.STUDENT_MANAGEMENT, "学生管理", <UserOutlined />),
-  [RoutePath.CLASSROOM_MANAGEMENT]: setItem(RoutePath.CLASSROOM_MANAGEMENT, "教室管理", <BankOutlined />),
-  [RoutePath.COURSE_MANAGEMENT]: setItem(RoutePath.COURSE_MANAGEMENT, "课程管理", <ReconciliationOutlined />),
+  admin_management: setItem("admin_management", "数据管理", <DatabaseOutlined />, [
+    setItem(RoutePath.TEACHER_MANAGEMENT, "教师管理"),
+    setItem(RoutePath.STUDENT_MANAGEMENT, "学生管理"),
+    setItem(RoutePath.CLASSROOM_MANAGEMENT, "教室管理"),
+    setItem(RoutePath.COURSE_MANAGEMENT, "课程管理"),
+    setItem(RoutePath.COLLEGE_MANAGEMENT, "学院管理"),
+    setItem(RoutePath.DEPARTMENT_MANAGEMENT, "院系管理"),
+    setItem(RoutePath.SPECIAL_MANAGEMENT, "专业管理"),
+    setItem(RoutePath.BUILDING_MANAGEMENT, "教学楼管理")
+  ]),
   [RoutePath.COURSE_SELECT]: setItem(RoutePath.COURSE_SELECT, "在线选课", <SelectOutlined />),
   [RoutePath.COURSE_MINE]: setItem(RoutePath.COURSE_MINE, "我的课程", <ReconciliationOutlined />),
   [RoutePath.HOMEWORK_MANAGEMENT]: setItem(RoutePath.HOMEWORK_MANAGEMENT, "作业管理", <FormOutlined />),
@@ -44,41 +49,50 @@ const menuItems = {
 // 默认选择的菜单选项
 const selectArr = []
 let items = []
+let itemUser = null
 
-// 选择菜单某一项触发
-let createOnSelect = (() => {
-  let func = null
-  return navigate => func ? func : (func = data => navigate(`/home/${data.key}`))
-})()
 export default function MyMenu() {
   // 这里获取当前显示的路由路径
   const selectedKeys = useLocation().pathname.split("/").splice(-1, 1)
   // 获取路由跳转函数
   const navigate = useNavigate()
   // state
-  const [isFinish, setIsFinish] = useState(0)
-  useEffect(() => {
-    void 0;
-    return () => {
-      items = []
-    }
-  })
-  const userType = store.loginUser.getState().type
-  !items.length && import("@/router/config").then(routes => {
-    return routes.default[UserType.USER_TYPES[userType]]
+  const userType = store.getState().loginUser.type
+  const [loading, setLoading] = useState(true)
+  itemUser !== userType && (!loading ? !setLoading(true) : true) && import("@/router/config").then(routes => {
+    return routes.default[userType]
   }).then(routes => {
+    items.splice(0, items.length)
     // 根据路由筛选菜单选项
     Object.keys(menuItems).forEach(path => {
-      Object.keys(routes).forEach(routePath => {
-        if (routePath === path) items.push(menuItems[path])
-      })
+      if (RoutePath.hasKey(path)) {
+        Object.keys(routes).forEach(routePath => {
+          routePath === path && items.push(menuItems[path])
+        })
+      } else {
+        const item = menuItems[path]
+        const children = item.children
+        const result = children.filter(({key}) => RoutePath.hasKey(key))
+        result.length && items.push(setItem(item.key, item.label, item.icon, result))
+      }
     })
-    setIsFinish(isFinish + 1)
+    setLoading(false)
+    itemUser = userType
   })
 
   return (
-    items.length ?
-      <Menu className="menu" selectedKeys={selectedKeys} theme="light" mode="inline" items={items.concat()} onSelect={createOnSelect(navigate)} defaultSelectedKeys={selectArr} />
+    !loading ?
+      <Menu
+        className="menu"
+        selectedKeys={selectedKeys}
+        theme="light"
+        mode="inline"
+        items={items.concat()}
+        onSelect={item => {
+          navigate(`/home/${item.key}`)
+        }}
+        defaultSelectedKeys={selectArr}
+      />
       : (<div className="menu-loading">
         <LoadingOutlined className="menu-icon" />
       </div>)
