@@ -3,3 +3,14 @@
     text-align: right;
     word-spacing: .75em;
 }
+
+@media screen and (max-device-width: 767px) {
+    .form {
+        .ant-row.ant-form-item {
+            margin-bottom: .2rem;
+            .ant-col.ant-form-item-label {
+                padding-bottom: .1rem;
+            }
+        }
+    }
+}

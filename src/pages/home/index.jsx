@@ -2,18 +2,20 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 19:44:06
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-07 23:38:45
+ * @LastEditTime: 2022-09-18 15:09:16
  * @FilePath: \student-performance\src\pages\home\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Routes, Route } from 'react-router-dom'
-import { Layout, Row, Col, Avatar, Dropdown, Space, Menu, Modal, Spin, Alert } from 'antd'
+import { Layout, Row, Col, Avatar, Dropdown, Button, Space, Menu, Modal, Alert, Drawer } from 'antd'
 import { UserOutlined, DownOutlined } from '@ant-design/icons'
 import MyMenu from '@/components/MyMenu'
 import RouteComponent from "@/router/routes"
 import './index.scss'
+import browerType from '@/utils/browserType'
+
 const { Header, Sider, Content } = Layout
 
 function QuitLogin() {
@@ -46,6 +48,44 @@ function QuitLogin() {
   </>
 }
 
+let routeMenu = null
+let MenuComponent = null
+browerType({
+  mobile() {
+    MenuComponent = () => {
+      const [open, setOpen] = useState(false)
+      const showDrawer = () => {
+        setOpen(true)
+      }
+      const hideDrawer = () => {
+        setOpen(false)
+      }
+      return (
+        <>
+          <Button onClick={showDrawer}>导航</Button>
+          <Drawer
+            title="导航"
+            closable={true}
+            visible={open}
+            onClose={hideDrawer}
+            key="left"
+            placement="left"
+            width="50vw"
+            className='menu-drawer'
+          >
+            <MyMenu />
+          </Drawer>
+        </>
+      )
+    }
+  },
+  client() {
+    routeMenu = <Sider>
+      <MyMenu />
+    </Sider>
+  }
+})
+
 // 加载核心内容组件
 export default function Home() {
   const [loading, setLoading] = useState(true)
@@ -62,10 +102,7 @@ export default function Home() {
     .finally(() => {
       setLoading(false)
     })
-  if (loading) return <>
-    <Spin tip="加载中..." />
-  </>
-  else if (!flag) return <>
+  if (!flag) return <>
     <Alert type="error" message="加载核心数据失败" />
   </>
   // 路由处理
@@ -77,35 +114,36 @@ export default function Home() {
   )
 
   return (
-    <Layout className='home' style={{
-      height: "100%"
-    }}>
-      <Header className="header">
-        <Row justify="space-between">
-          <Col className="title"><h1>课程管理系统</h1></Col>
-          <Col>
-            <Avatar size="middle" className="avatar" icon={<UserOutlined />} />
-            <Dropdown overlay={menu} trigger={['click']}>
-              <Space>
-                <span className="self-link">个人中心</span>
-                <DownOutlined />
-              </Space>
-            </Dropdown>
-          </Col>
-        </Row>
-      </Header>
-      <Layout className="layout">
-        <Sider>
-          <MyMenu />
-        </Sider>
-        <Content className='home-content'>
-          <div className="home-content-inner">
-            <Routes>
-              <Route path="*" element={<RouteComponent />}/>
-            </Routes>
-          </div>
-        </Content>
+    <>
+      { MenuComponent && <MenuComponent /> }
+      <Layout className='home' style={{
+        height: "100%"
+      }}>
+        <Header className="header">
+          <Row justify="space-between">
+            <Col className="title"><h1>课程管理系统</h1></Col>
+            <Col>
+              <Avatar size="middle" className="avatar" icon={<UserOutlined />} />
+              <Dropdown overlay={menu} trigger={['click']}>
+                <Space>
+                  <span className="self-link">个人中心</span>
+                  <DownOutlined />
+                </Space>
+              </Dropdown>
+            </Col>
+          </Row>
+        </Header>
+        <Layout className="layout">
+          {routeMenu}
+          <Content className='home-content'>
+            <div className="home-content-inner">
+              <Routes>
+                <Route path="*" element={<RouteComponent />} />
+              </Routes>
+            </div>
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </>
   )
 }

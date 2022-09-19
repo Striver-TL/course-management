@@ -2,11 +2,11 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 17:47:20
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-02 16:44:31
+ * @LastEditTime: 2022-09-17 18:10:39
  * @FilePath: \student-performance\src\App.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { Suspense, useState } from 'react'
+import React, { useState } from 'react'
 import { Route, useLocation } from 'react-router'
 import { Navigate } from 'react-router-dom'
 import { Routes } from 'react-router-dom'
@@ -17,7 +17,8 @@ import loadableComponent from './components/loadableComponent';
 import { actionTypes, store } from './redux/store';
 import './App.scss';
 
-const pageComponent = {}
+let component = null
+let path = null
 /**
  * 编程式路由组件，用于动态处理路由
  * @author Striver-TL
@@ -48,27 +49,25 @@ const RouteComponent = () => {
         }
       }).finally(() => setLoading(false))
   }
-  if (loading) return <Spin tip="页面加载中..." />
+  if (loading) return <Spin className='page-loading' tip="页面加载中..." />
   // 根据分割url获取本次路由的pathname
   // 例：localhost:3000/home (获取到home)
   const pathname = location.pathname.split("/")[1] || "home"
+  if (pathname === path) return component
   // 根据不同路径加载不同页面
   switch (pathname) {
     case "home":
-      if (!store.getState().loginUser) return <Navigate to="/login" element={loadableComponent(() => import("@/pages/login"))} />
-      !pageComponent[pathname] && (pageComponent[pathname] = React.lazy(() => import("@/pages/home")))
+      if (!store.getState().loginUser) return <Navigate to="/login" replace />
+      component = loadableComponent(() => import("@/pages/home"))
       break;
     case "login":
-      !pageComponent[pathname] && (pageComponent[pathname] = React.lazy(() => import("@/pages/login")))
+      component = loadableComponent(() => import("@/pages/login"))
       break;
     default:
-      !pageComponent[pathname] && (pageComponent[pathname] = React.lazy(() => import("@/pages/404")))
+      component = loadableComponent(() => import("@/pages/404"))
   }
-  const Component = pageComponent[pathname]
-  console.log("RouteComponent ", pathname)
-  return <Suspense fallback={<Spin tip="页面加载中..." />}>
-    <Component />
-  </Suspense>
+  path = pathname
+  return component
 }
 
 function App() {

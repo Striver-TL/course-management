@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 23:19:43
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-16 16:03:46
+ * @LastEditTime: 2022-09-18 17:42:35
  * @FilePath: \student-performance\src\pages\home\admin\teacher\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,6 +18,7 @@ import QueryTable from '@/request/utils/QueryTable';
 
 import { store } from "@/redux/store"
 import { useState, useEffect } from 'react';
+import PageComponent from '../../../../components/PageComponent';
 
 // 教师表格组件
 // 用于展示和操作教师信息
@@ -35,10 +36,6 @@ const TeacherTable = (() => {
         key: "gender",
         dataIndex: "gender",
         title: "性别"
-    }, {
-        key: "control",
-        dataIndex: "control",
-        title: "操作"
     }]
 
     // 针对教师类的数据验证函数
@@ -148,20 +145,16 @@ const TeacherTable = (() => {
                     placeholder: "请选择学院",
                     options: (() => {
                         const collegeNames = store.getState().collegeNames
-                        return [{ label: "不选择", value: "" }].concat(
-                            Reflect.ownKeys(collegeNames)
-                                .map(name => ({ value: name, label: collegeNames[name] }))
-                        )
+                        return Reflect.ownKeys(collegeNames)
+                            .map(name => ({ value: name, label: collegeNames[name] }))
                     })(),
                     onChange(key) {
                         const departmentNames = store.getState().departmentNames[key]
-                        setDepartmentOptions([{ label: "不选择", value: "" }].concat(
-                            Reflect.ownKeys(departmentNames || {}).map(name => ({
-                                value: name,
-                                label: departmentNames[name]
-                            }))
-                        ))
-
+                        setDepartmentOptions(Reflect.ownKeys(departmentNames || {}).map(name => ({
+                            value: name,
+                            label: departmentNames[name]
+                        }))
+                        )
                     }
                 }
             },
@@ -184,81 +177,64 @@ const TeacherTable = (() => {
         });
 
         // 根据获取的数据转为相应节点
-        const toNode = ({ id, tno, tname, gender }) => {
+        const toNode = ({ tno, tname, gender }) => {
             // 创建教师类
             const teacher = new Teacher({
                 tno,
                 tname,
                 gender
             })
-            teacher.key = id
+            teacher.key = tno
             // 
             teacher.gender = <Tag color={gender === "0" ? "pink" : "blue"}>{teacher.genderLabel}</Tag>
-            // 操作列的内容
-            teacher.control = (
-                <Space size="small">
-                    {/* 查看教师信息按钮 */}
-                    <MyTable.SeeInfoButton
-                        type={QueryTable.tableKeys.teacher}
-                        id={id}
-                    />
-                    {/* 更新教师信息按钮 */}
-                    <MyTable.UpdateButton
-                        name="updateTeacher"
-                        type={QueryTable.tableKeys.teacher}
-                        id={id}
-                        inputConfig={inputConfig}
-                        validator={validator}
-                        usePubSub={true}
-                    />
-                    {/* 删除教师信息按钮 */}
-                    <MyTable.DeleteButton
-                        tableName={name}
-                        type={QueryTable.tableKeys.teacher}
-                        id={id}
-                        errorNode={<>确定删除教工号为<Tag color="red">{tno}</Tag>的教师数据？</>}
-                    />
-                </Space>
-            )
             return teacher
         }
 
         // JSX
         return (
-            <Space direction='vertical' size="middle" style={{ width: "100%" }}>
-                <MyTable.TableControl
-                    inputConfig={inputConfig}
-                    type={QueryTable.tableKeys.teacher}
-                    tableColumns={columns}
-                    validator={validator}
-                    name={name}
-                />
-                <MyTable
-                    // 数据类型
-                    type={QueryTable.tableKeys.teacher}
-                    // 表格类信息
-                    tableColumns={columns}
-                    // 查询的字段
-                    queryColumns={["id", "tno", "tname", "gender"]}
-                    toNode={toNode}
-                    name={name}
-                />
-            </Space>
+            <PageComponent title="教师管理">
+                <Space direction='vertical' size="middle" style={{ width: "100%" }}>
+                    <MyTable.TableControl
+                        inputConfig={inputConfig}
+                        type={QueryTable.tableKeys.teacher}
+                        tableColumns={columns}
+                        validator={validator}
+                        name={name}
+                    >
+                        {/* 查看教师信息按钮 */}
+                        <MyTable.SeeInfoButton
+                            type={QueryTable.tableKeys.teacher}
+                            tableName={name}
+                        />
+                        {/* 更新教师信息按钮 */}
+                        <MyTable.UpdateButton
+                            name="updateTeacher"
+                            tableName={name}
+                            type={QueryTable.tableKeys.teacher}
+                            inputConfig={inputConfig}
+                            validator={validator}
+                            usePubSub={true}
+                        />
+                        {/* 删除教师信息按钮 */}
+                        <MyTable.DeleteButton
+                            tableName={name}
+                            type={QueryTable.tableKeys.teacher}
+                        />
+                    </MyTable.TableControl>
+                    <MyTable
+                        // 数据类型
+                        type={QueryTable.tableKeys.teacher}
+                        // 表格类信息
+                        tableColumns={columns}
+                        // 查询的字段
+                        queryColumns={["id", "tno", "tname", "gender"]}
+                        toNode={toNode}
+                        name={name}
+                    />
+                </Space>
+            </PageComponent>
         )
     }
 })()
 
-// 教师管理页的组件
-const TeacherManagement = () => {
-    return (
-        <div>
-            {/* 标题 */}
-            <h3 className="title">教师管理</h3>
-            <br />
-            {/* 操作数据的表格 */}
-            <TeacherTable />
-        </div>
-    );
-}
-
-export default TeacherManagement;
+export default TeacherTable

@@ -1,0 +1,30 @@
+.page-loading {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+
+    .page-loading-block {
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        display: inline-block;
+        padding: 15px 20px;
+        transform: translateX(-50%);
+        animation: fade-in .5s ease;
+    }
+}
+
+.page-main {
+    height: 100%;
+    animation: fade-in .5s ease;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

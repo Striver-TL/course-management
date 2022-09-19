@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 23:19:43
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-16 16:02:49
+ * @LastEditTime: 2022-09-18 16:38:08
  * @FilePath: \classroom-performance\src\pages\home\admin\classroom\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -15,6 +15,7 @@ import PubSub from 'pubsub-js';
 
 import Classroom from '@/model/Classroom'
 import QueryTable from '@/request/utils/QueryTable';
+import PageComponent from '../../../../components/PageComponent';
 // 教室表格组件
 // 用于展示和操作教室信息
 const ClassroomTable = (() => {
@@ -31,10 +32,6 @@ const ClassroomTable = (() => {
         key: "capacity",
         dataIndex: "capacity",
         title: "容纳人数"
-    }, {
-        key: "control",
-        dataIndex: "control",
-        title: "操作"
     }]
 
     // 针对教室类的数据验证函数胡
@@ -141,69 +138,54 @@ const ClassroomTable = (() => {
             // 
             classroom.layer_code = <Tag color="blue">{`${classroom.layer}${classroom.code}`}</Tag>
             classroom.building_name = buildingOptions.filter(item => item.value === classroom.building_code)[0].label
-            // 操作列的内容
-            classroom.control = (
-                <Space size="small">
-                    {/* 查看教室信息按钮 */}
-                    <MyTable.SeeInfoButton
-                        type={QueryTable.tableKeys.classroom}
-                        id={id}
-                    />
-                    {/* 更新教室信息按钮 */}
-                    <MyTable.UpdateButton
-                        name="updateClassroom"
-                        type={QueryTable.tableKeys.classroom}
-                        id={id}
-                        inputConfig={inputConfig}
-                        validator={validator}
-                    />
-                    {/* 删除教室信息按钮 */}
-                    <MyTable.DeleteButton
-                        tableName={name}
-                        type={QueryTable.tableKeys.classroom}
-                        id={id}
-                        errorNode={<>确定删除教室？</>}
-                    />
-                </Space>
-            )
             return classroom
         }
         // JSX
         return (
-            <Space direction='vertical' size="middle" style={{ width: "100%" }}>
-                <MyTable.TableControl
-                    inputConfig={inputConfig}
-                    type={QueryTable.tableKeys.classroom}
-                    tableColumns={columns}
-                    validator={validator}
-                    name={name}
-                />
-                <MyTable
-                    // 数据类型
-                    type={QueryTable.tableKeys.classroom}
-                    // 表格类信息
-                    tableColumns={columns}
-                    // 查询的字段
-                    queryColumns={["id", "building_code", "layer", "code", "capacity"]}
-                    toNode={toNode}
-                    name={name}
-                />
-            </Space>
+            <PageComponent title='教室管理'>
+
+                <Space direction='vertical' size="middle" style={{ width: "100%" }}>
+                    <MyTable.TableControl
+                        inputConfig={inputConfig}
+                        type={QueryTable.tableKeys.classroom}
+                        tableColumns={columns}
+                        validator={validator}
+                        name={name}
+                    >
+                        {/* 查看教室信息按钮 */}
+                        <MyTable.SeeInfoButton
+                            tableName={name}
+                            type={QueryTable.tableKeys.classroom}
+                        />
+                        {/* 更新教室信息按钮 */}
+                        <MyTable.UpdateButton
+                            name="updateClassroom"
+                            tableName={name}
+                            type={QueryTable.tableKeys.classroom}
+                            inputConfig={inputConfig}
+                            validator={validator}
+                            usePubSub={true}
+                        />
+                        {/* 删除教室信息按钮 */}
+                        <MyTable.DeleteButton
+                            tableName={name}
+                            type={QueryTable.tableKeys.classroom}
+                        />
+                    </MyTable.TableControl>
+                    <MyTable
+                        // 数据类型
+                        type={QueryTable.tableKeys.classroom}
+                        // 表格类信息
+                        tableColumns={columns}
+                        // 查询的字段
+                        queryColumns={["id", "building_code", "layer", "code", "capacity"]}
+                        toNode={toNode}
+                        name={name}
+                    />
+                </Space>
+            </PageComponent>
         )
     }
 })()
 
-// 教室管理页的组件
-const ClassroomManagement = () => {
-    return (
-        <div>
-            {/* 标题 */}
-            <h3 className="title">教室管理</h3>
-            <br />
-            {/* 操作数据的表格 */}
-            <ClassroomTable />
-        </div>
-    );
-}
-
-export default ClassroomManagement;
+export default ClassroomTable

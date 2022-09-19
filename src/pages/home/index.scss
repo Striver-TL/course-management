@@ -34,14 +34,9 @@
     .title h1 {
         font-size: .4rem;
     }
-
-    .layout {
-        padding: .3rem;
-    }
-
+    
     .home-content {
         padding: .2rem;
-        margin-left: .4rem;
     }
 
     .header {
@@ -55,6 +50,12 @@
 
         .self-link {
             margin-left: .3rem;
+        }
+    }
+
+    .menu-drawer {
+        .ant-drawer-body {
+            padding: 0;
         }
     }
 }

@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 18:12:35
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-02 08:48:28
+ * @LastEditTime: 2022-09-18 18:10:19
  * @FilePath: \student-performance\src\model\Teacher.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -30,12 +30,8 @@ class Teacher extends Validator {
         this.gender = option.gender
         this.genderLabel = Teacher.gender[option.gender]
         if (option.birthday) {
-            this.birthday = option.birthday
             const date = new Date(option.birthday)
-            const nowDate = new Date()
-            this.age = nowDate.getFullYear() - date.getFullYear()
-            nowDate.setFullYear(date.getFullYear())
-            this.age -= date > nowDate
+            this.birthday = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
         }
         if (option.phone) this.phone = option.phone
         if (option.email) this.email = option.email  

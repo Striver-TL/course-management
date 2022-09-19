@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-11 19:32:25
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-16 15:00:00
+ * @LastEditTime: 2022-09-16 21:36:06
  * @FilePath: \student-performance\src\components\alertInput\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -54,7 +54,7 @@ const alertInput = (type, config) => {
                 },
                 afterClose() {
                     delete componentStack[name]
-                    typeof config.onCancel === "function" && config.onCancel()
+                    typeof config.afterClose === "function" && config.afterClose()
                 },
                 // 右上角显示close按钮
                 closable: true,

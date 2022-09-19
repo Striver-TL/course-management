@@ -1,3 +1,9 @@
+.login-wrapper {
+    height: 100%;
+    background-image: url(../../assets/login_background.jpeg);
+    background-size: cover;
+}
+
 @media screen and (min-device-width: 768px) {
     .login {
         max-width: 550px;
@@ -7,6 +13,7 @@
 
     .title {
         font-size: 24px;
+        text-shadow: 0 0 5px #fff;
     }
 }
 
@@ -18,9 +25,10 @@
         .form {
             padding: 0 .75rem;
         }
-        
+
         .title {
             font-size: 1.5em;
+            text-shadow: 0 0 .2em #fff;
         }
     }
 }
@@ -29,7 +37,7 @@
     .content {
         background: #efefef;
         border-radius: 0 0 5px 5px;
-        
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, .2);
     }
 
     .title {

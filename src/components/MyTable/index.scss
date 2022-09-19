@@ -1,9 +1,31 @@
 .searchbar {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-
     .search-btn {
         margin-left: 10px;
+    }
+}
+
+@media screen and (max-device-width: 767px) {
+    .searchbar {
+        max-width: max-content;
+
+        .ant-input {
+            max-width: 40vw;
+        }
+    }
+
+    .ant-table-cell {
+        .ant-space {
+            flex-direction: column;
+        }
+
+        .ant-btn {
+            padding: 0 .2rem;
+        }
+    }
+
+    .table-control-row {
+        padding: .2rem;
+        margin: .1rem;
+        border: 1px solid #ddd;
     }
 }

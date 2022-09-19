@@ -24,6 +24,9 @@
 }
 
 @media screen and (max-device-width: 767px) {
+    .menu {
+        height: auto;
+    }
     .menu-loading {
         .menu-icon {
             font-size: .25rem;

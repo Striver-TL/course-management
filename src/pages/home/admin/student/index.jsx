@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 23:19:43
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-16 16:03:55
+ * @LastEditTime: 2022-09-18 18:30:21
  * @FilePath: \student-performance\src\pages\home\admin\student\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -17,6 +17,7 @@ import Student from '@/model/Student'
 import QueryTable from '@/request/utils/QueryTable';
 import { store } from '@/redux/store'
 import { useState, useEffect } from 'react';
+import PageComponent from '../../../../components/PageComponent';
 
 // 学生表格组件
 // 用于展示和操作学生信息
@@ -34,10 +35,6 @@ const StudentTable = (() => {
         key: "gender",
         dataIndex: "gender",
         title: "性别"
-    }, {
-        key: "control",
-        dataIndex: "control",
-        title: "操作"
     }]
 
     // 针对学生类的数据验证函数胡
@@ -93,10 +90,10 @@ const StudentTable = (() => {
                     type: "select",
                     options: [{
                         value: "0",
-                        title: "女"
+                        label: "女"
                     }, {
                         value: "1",
-                        title: "男"
+                        label: "男"
                     }]
                 }
             },
@@ -147,26 +144,21 @@ const StudentTable = (() => {
                         const departmentNames = store.getState().departmentNames[value] || {}
                         const specialNames = store.getState().specialNames
                         setSpecialOptions(
-                            [{
-                                value: "",
-                                label: "不选择"
-                            }].concat(
-                                Reflect
-                                    .ownKeys(departmentNames)
-                                    .reduce(
-                                        (prevent, name) => {
-                                            let specials = specialNames[name]
-                                            if (specials) {
-                                                prevent.push(...Reflect.ownKeys(specials).map(name => ({
-                                                    value: name,
-                                                    label: specials[name]
-                                                })))
-                                            }
-                                            return prevent
-                                        },
-                                        []
-                                    )
-                            )
+                            Reflect
+                                .ownKeys(departmentNames)
+                                .reduce(
+                                    (prevent, name) => {
+                                        let specials = specialNames[name]
+                                        if (specials) {
+                                            prevent.push(...Reflect.ownKeys(specials).map(name => ({
+                                                value: name,
+                                                label: specials[name]
+                                            })))
+                                        }
+                                        return prevent
+                                    },
+                                    []
+                                )
                         )
                     },
                     options: (() => {
@@ -184,10 +176,7 @@ const StudentTable = (() => {
                 input: {
                     placeholder: "请选择专业",
                     type: "select",
-                    options: [{
-                        value: "",
-                        label: "不选择"
-                    }].concat(specialOptions)
+                    options: specialOptions
                 }
             }
         ]
@@ -207,70 +196,54 @@ const StudentTable = (() => {
             student.key = id
             // 
             student.gender = <Tag color={gender === "0" ? "pink" : "blue"}>{student.genderLabel}</Tag>
-            // 操作列的内容
-            student.control = (
-                <Space size="small">
-                    {/* 查看学生信息按钮 */}
-                    <MyTable.SeeInfoButton
-                        type={QueryTable.tableKeys.student}
-                        id={id}
-                    />
-                    {/* 更新学生信息按钮 */}
-                    <MyTable.UpdateButton
-                        name="updateStudent"
-                        type={QueryTable.tableKeys.student}
-                        id={id}
-                        inputConfig={inputConfig}
-                        validator={validator}
-                    />
-                    {/* 删除学生信息按钮 */}
-                    <MyTable.DeleteButton
-                        tableName={name}
-                        type={QueryTable.tableKeys.student}
-                        id={id}
-                        errorNode={<>确定删除学号为<Tag color="red">{sno}</Tag>的学生数据？</>}
-                    />
-                </Space>
-            )
             return student
         }
 
         // JSX
         return (
-            <Space direction='vertical' size="middle" style={{ width: "100%" }}>
-                <MyTable.TableControl
-                    inputConfig={inputConfig}
-                    type={QueryTable.tableKeys.student}
-                    tableColumns={columns}
-                    validator={validator}
-                    name={name}
-                />
-                <MyTable
-                    // 数据类型
-                    type={QueryTable.tableKeys.student}
-                    // 表格类信息
-                    tableColumns={columns}
-                    // 查询的字段
-                    queryColumns={["id", "sno", "sname", "gender"]}
-                    toNode={toNode}
-                    name={name}
-                />
-            </Space>
+            <PageComponent title="学生管理">
+                <Space direction='vertical' size="middle" style={{ width: "100%" }}>
+                    <MyTable.TableControl
+                        inputConfig={inputConfig}
+                        type={QueryTable.tableKeys.student}
+                        tableColumns={columns}
+                        validator={validator}
+                        name={name}
+                    >
+                        {/* 查看学生信息按钮 */}
+                        <MyTable.SeeInfoButton
+                            tableName={name}
+                            type={QueryTable.tableKeys.student}
+                        />
+                        {/* 更新学生信息按钮 */}
+                        <MyTable.UpdateButton
+                            tableName={name}
+                            name="updateStudent"
+                            type={QueryTable.tableKeys.student}
+                            inputConfig={inputConfig}
+                            validator={validator}
+                            usePubSub={true}
+                        />
+                        {/* 删除学生信息按钮 */}
+                        <MyTable.DeleteButton
+                            tableName={name}
+                            type={QueryTable.tableKeys.student}
+                        />
+                    </MyTable.TableControl>
+                    <MyTable
+                        // 数据类型
+                        type={QueryTable.tableKeys.student}
+                        // 表格类信息
+                        tableColumns={columns}
+                        // 查询的字段
+                        queryColumns={["id", "sno", "sname", "gender"]}
+                        toNode={toNode}
+                        name={name}
+                    />
+                </Space>
+            </PageComponent>
         )
     }
 })()
 
-// 学生管理页的组件
-const StudentManagement = () => {
-    return (
-        <div>
-            {/* 标题 */}
-            <h3 className="title">学生管理</h3>
-            <br />
-            {/* 操作数据的表格 */}
-            <StudentTable />
-        </div>
-    );
-}
-
-export default StudentManagement;
+export default StudentTable

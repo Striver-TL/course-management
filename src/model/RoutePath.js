@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-11 15:56:54
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-16 14:32:12
+ * @LastEditTime: 2022-09-18 13:47:40
  * @FilePath: \student-performance\src\model\RoutePath.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -43,9 +43,14 @@ export default class MenuItemKey {
     static DEPARTMENT_MANAGEMENT = "department_management"
     // 专业管理
     static SPECIAL_MANAGEMENT = "special_management"
-
     // 教学楼管理
     static BUILDING_MANAGEMENT = "building_management"
+    // 选课管理
+    static SELECT_MANAGEMENT = "select_management"
+    // 用户管理
+    static USER_MANAGEMENT = "user_management"
+    // 课程安排
+    static COURSE_ARRANGEMENT = "course_arragnement"
 
     static hasKey(key) {
         return Object.getOwnPropertyNames(MenuItemKey).map(name => MenuItemKey[name]).indexOf(key) !== -1;

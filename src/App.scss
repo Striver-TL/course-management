@@ -16,6 +16,7 @@ body,
 
 .header {
     color: #fff;
+
     h1 {
         color: #fff;
     }
@@ -30,10 +31,18 @@ h3.title {
 }
 
 @media screen and (max-device-width: 677px) {
-    body {
-        font-size: .25rem;
-    }
     h3.title {
-        font-size: .4rem;
+        font-size: .5rem;
+        padding: 0;
+    }
+
+    .ant-table {
+        .antd-table-content {
+            font-size: .3rem !important;
+        }
+    }
+
+    .ant-btn {
+        font-size: .3rem !important;
     }
 }

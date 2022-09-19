@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-13 20:54:12
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-08-19 10:34:48
+ * @LastEditTime: 2022-09-18 12:13:32
  * @FilePath: \student-performance\src\pages\login\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -109,51 +109,53 @@ const Login = () => {
 
 
     return (
-        <div className="login">
-            <h2 className="title">课程管理系统</h2>
-            <Menu theme="dark" defaultSelectedKeys={[selectType]} onSelect={menuSelect} items={items} mode="horizontal"></Menu>
-            <Space className="content" direction='vertical' size="middle" style={
-                {
-                    width: "100%"
-                }
-            }>
-                {
-                    isError ? <Alert style={{
-                        fontSize: "12px"
-                    }} message={errorMessage} type="error" banner />
-                        : <Alert style={{
-                            fontSize: "12px"
-                        }} message="请输入输入账号密码进行登录" type="info" banner />
-                }
-                <Form
-                    name="basic"
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 14 }}
-                    initialValues={{ remember: true }}
-                    autoComplete="off"
-                    className="form"
-                >
+        <div className="login-wrapper">
+            <div className="login">
+                <h2 className="title">课程管理系统</h2>
+                <Menu theme="dark" defaultSelectedKeys={[selectType]} onSelect={menuSelect} items={items} mode="horizontal"></Menu>
+                <Space className="content" direction='vertical' size="middle" style={
                     {
-                        inputs[selectType]
+                        width: "100%"
                     }
-
-                    <Form.Item
-                        label="密码"
-                        name="password"
-                        rules={[{ required: true, message: '请输入你的密码' }]}
-                        onChange={changeHandler(setPassword)}
-                        value={password}
+                }>
+                    {
+                        isError ? <Alert style={{
+                            fontSize: "12px"
+                        }} message={errorMessage} type="error" banner />
+                            : <Alert style={{
+                                fontSize: "12px"
+                            }} message="请输入输入账号密码进行登录" type="info" banner />
+                    }
+                    <Form
+                        name="basic"
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 14 }}
+                        initialValues={{ remember: true }}
+                        autoComplete="off"
+                        className="form"
                     >
-                        <Input.Password placeholder='请输入你的密码' value={password} />
-                    </Form.Item>
+                        {
+                            inputs[selectType]
+                        }
 
-                    <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-                        <Button loading={isLogging} disabled={isLogging} type="primary" htmlType="submit" onClick={toSubmit}>
-                            登录
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Space>
+                        <Form.Item
+                            label="密码"
+                            name="password"
+                            rules={[{ required: true, message: '请输入你的密码' }]}
+                            onChange={changeHandler(setPassword)}
+                            value={password}
+                        >
+                            <Input.Password placeholder='请输入你的密码' value={password} />
+                        </Form.Item>
+
+                        <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+                            <Button loading={isLogging} disabled={isLogging} type="primary" htmlType="submit" onClick={toSubmit}>
+                                登录
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </Space>
+            </div>
         </div>
     );
 }

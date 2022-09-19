@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-19 17:12:58
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-16 15:34:24
+ * @LastEditTime: 2022-09-18 18:42:58
  * @FilePath: \student-performance-server\utils\validator.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -62,15 +62,15 @@ const validator = {
         return this.department_name(name)
     },
     // 验证姓名
-    cname(cname) {
-        return toString.call(cname) === type.string && /^([\u4e00-\u9fa5]{1,20}|[a-zA-Z.\s]{1,20})$/g.test(cname)
+    name(cname) {
+        return this.department_name(cname)
     },
     // 验证姓名
-    tname(tname) {
-        return this.cname(tname)
+    tname(cname) {
+        return toString.call(cname) === type.string && /^([\u4e00-\u9fa5]{1,20}|[a-zA-Z.\s]{1,20})$/g.test(cname)
     },
     sname(sname) {
-        return this.cname(sname)
+        return this.tname(sname)
     },
     // 验证年龄
     age(age) {
@@ -100,12 +100,18 @@ const validator = {
     birthday(format) {
         const now = new Date()
         let date = null
+        let nowFormat = `${now.getFullYear() - 150}-${now.getMonth() + 1}-${now.getDate()}`
         try {
+            if((/Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent))) {
+                format = format.replace(/-/g, "/")
+                nowFormat = nowFormat.replace(/-/g, "/")
+            }
             date = new Date(format)
         } catch(e) {
             return false
         }
-        return toString.call(date) === type.date && date.getTime() < now.getTime() && new Date(`${now.getFullYear() - 150}-${now.getMonth() + 1}-${now.getDate()}`) < date.getTime()
+
+        return toString.call(date) === type.date && date.getTime() < now.getTime() && new Date(nowFormat) < date.getTime()
     },
     // 验证课程性质
     required(required) {

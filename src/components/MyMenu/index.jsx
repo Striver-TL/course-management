@@ -2,12 +2,12 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 21:03:47
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-16 14:34:06
+ * @LastEditTime: 2022-09-18 13:52:37
  * @FilePath: \student-performance\src\components\MyMenu\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { Menu } from 'antd'
-import { ReconciliationOutlined, DatabaseOutlined, BarChartOutlined, FormOutlined, ScheduleOutlined, LoadingOutlined, HomeOutlined, EditOutlined, SelectOutlined } from '@ant-design/icons'
+import { ReconciliationOutlined, InsertRowAboveOutlined, DatabaseOutlined, BarChartOutlined, FormOutlined, ScheduleOutlined, LoadingOutlined, HomeOutlined, EditOutlined, SelectOutlined, UserOutlined } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router'
 
 import './index.scss'
@@ -28,6 +28,7 @@ function setItem(key, label, icon, children) {
 
 const menuItems = {
   [RoutePath.HOME]: setItem(RoutePath.HOME, "主页", <HomeOutlined />),
+  [RoutePath.USER_MANAGEMENT]: setItem(RoutePath.USER_MANAGEMENT, "用户管理", <UserOutlined />),
   admin_management: setItem("admin_management", "数据管理", <DatabaseOutlined />, [
     setItem(RoutePath.TEACHER_MANAGEMENT, "教师管理"),
     setItem(RoutePath.STUDENT_MANAGEMENT, "学生管理"),
@@ -38,6 +39,8 @@ const menuItems = {
     setItem(RoutePath.SPECIAL_MANAGEMENT, "专业管理"),
     setItem(RoutePath.BUILDING_MANAGEMENT, "教学楼管理")
   ]),
+  [RoutePath.SELECT_MANAGEMENT]: setItem(RoutePath.SELECT_MANAGEMENT, "选课管理", <SelectOutlined />),
+  [RoutePath.COURSE_ARRANGEMENT]: setItem(RoutePath.COURSE_ARRANGEMENT, "课程安排", <InsertRowAboveOutlined />),
   [RoutePath.COURSE_SELECT]: setItem(RoutePath.COURSE_SELECT, "在线选课", <SelectOutlined />),
   [RoutePath.COURSE_MINE]: setItem(RoutePath.COURSE_MINE, "我的课程", <ReconciliationOutlined />),
   [RoutePath.HOMEWORK_MANAGEMENT]: setItem(RoutePath.HOMEWORK_MANAGEMENT, "作业管理", <FormOutlined />),
@@ -72,7 +75,7 @@ export default function MyMenu() {
       } else {
         const item = menuItems[path]
         const children = item.children
-        const result = children.filter(({key}) => RoutePath.hasKey(key))
+        const result = children.filter(({ key }) => RoutePath.hasKey(key))
         result.length && items.push(setItem(item.key, item.label, item.icon, result))
       }
     })
