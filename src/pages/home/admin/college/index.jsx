@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 23:19:43
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-18 17:52:55
+ * @LastEditTime: 2022-10-26 08:25:52
  * @FilePath: \student-performance\src\pages\home\admin\teacher\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -19,9 +19,9 @@ import PageComponent from '../../../../components/PageComponent';
 
 // 教师表格组件
 // 用于展示和操作教师信息
-const CollegeTable = (() => {
+let CollegeTable = (() => {
     // 教师表格列信息
-    const columns = [{
+    let columns = [{
         key: "college_code",
         dataIndex: "college_code",
         title: "学院代码"
@@ -31,7 +31,7 @@ const CollegeTable = (() => {
         title: "学院名字"
     }]
 
-    const inputConfig = [
+    let inputConfig = [
         {
             key: "college_code",
             item: {
@@ -60,19 +60,19 @@ const CollegeTable = (() => {
         }
     ]
     // 针对学院类的数据验证函数
-    const validator = data => {
+    let validator = data => {
         // 创建教师类
-        const college = new College(data)
+        let college = new College(data)
         // 返回验证结果
         return college.toValid()
     }
 
-    const name = "page:college_management"
+    let name = "page:college_management"
 
     // 根据获取的数据转为相应节点
-    const toNode = ({ id, college_code, college_name }) => {
+    let toNode = ({ id, college_code, college_name }) => {
         // 创建学院类
-        const college = new College({
+        let college = new College({
             college_code,
             college_name
         })
@@ -85,7 +85,7 @@ const CollegeTable = (() => {
             <Space direction='vertical' size="middle" style={{ width: "100%" }}>
                 <MyTable.TableControl
                     inputConfig={inputConfig}
-                    type={QueryTable.tableKeys.college}
+                    type={QueryTable.tableKeys.TABLE_COLLEGE}
                     tableColumns={columns}
                     validator={validator}
                     name={name}
@@ -94,19 +94,19 @@ const CollegeTable = (() => {
                     <MyTable.UpdateButton
                         name="updateCollege"
                         tableName={name}
-                        type={QueryTable.tableKeys.college}
+                        type={QueryTable.tableKeys.TABLE_COLLEGE}
                         inputConfig={inputConfig}
                         validator={validator}
                     />
                     {/* 删除学院信息按钮 */}
                     <MyTable.DeleteButton
                         tableName={name}
-                        type={QueryTable.tableKeys.college}
+                        type={QueryTable.tableKeys.TABLE_COLLEGE}
                     />
                 </MyTable.TableControl>
                 <MyTable
                     // 数据类型
-                    type={QueryTable.tableKeys.college}
+                    type={QueryTable.tableKeys.TABLE_COLLEGE}
                     // 表格类信息
                     tableColumns={columns}
                     // 查询的字段

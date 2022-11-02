@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-09-04 19:25:42
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-12 15:07:13
+ * @LastEditTime: 2022-10-31 15:18:29
  * @FilePath: \student-performance\src\core\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -12,7 +12,7 @@ import { store, actionTypes } from "../redux/store"
 
 const taskStack = [
     () => {
-        new QueryTable(tableKeys.college).getData({
+        new QueryTable(tableKeys.TABLE_COLLEGE).getData({
             // 获取的字段
             columns: [
                 // 学院代码
@@ -35,7 +35,7 @@ const taskStack = [
                         )
                     })
 
-                    new QueryTable(tableKeys.department).getData({
+                    new QueryTable(tableKeys.TABLE_DEPARTMENT).getData({
                         // 获取数据的字段
                         columns: [
                             // 系代码
@@ -63,7 +63,7 @@ const taskStack = [
                             })
 
                             // 查询专业
-                            new QueryTable(tableKeys.special).getData({
+                            new QueryTable(tableKeys.TABLE_SPECIAL).getData({
                                 // 获取的字段
                                 columns: [
                                     // 专业代码

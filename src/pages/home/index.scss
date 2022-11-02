@@ -54,6 +54,9 @@
     }
 
     .menu-drawer {
+        & {
+            z-index: 99999;
+        }
         .ant-drawer-body {
             padding: 0;
         }

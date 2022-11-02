@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-05 16:32:37
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-17 17:56:59
+ * @LastEditTime: 2022-09-24 11:19:01
  * @FilePath: \student-performance\src\components\LoadableComponent\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import "./index.scss"
 
 import { Spin } from "antd"
-
+ 
 /**
  * 该组件用于创建一个延迟加载的组件，此延迟为时间上的延迟
  * @author Striver-TL
@@ -27,7 +27,7 @@ const createDelayComponent = () => {
         useEffect(() => {
             loading && setTimeout(() => {
                 setLoading(false)
-            }, 800)
+            }, 400)
             // 组件被销毁时，释放掉DelayComponent
             return () => DelayComponent = null
         })

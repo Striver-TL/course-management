@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 23:19:43
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-18 16:34:30
+ * @LastEditTime: 2022-10-26 08:28:07
  * @FilePath: \student-performance\src\pages\home\admin\teacher\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -21,9 +21,9 @@ import PageComponent from '../../../../components/PageComponent';
 
 // 教师表格组件
 // 用于展示和操作教师信息
-const SpecialTable = (() => {
+let SpecialTable = (() => {
     // 教师表格列信息
-    const columns = [{
+    let columns = [{
         key: "special_code",
         dataIndex: "special_code",
         title: "专业代码"
@@ -32,29 +32,25 @@ const SpecialTable = (() => {
         dataIndex: "special_name",
         title: "专业名字"
     }, {
-        key: "college_name",
-        dataIndex: "college_name",
-        title: "所属学院"
-    }, {
         key: "department_name",
         dataIndex: "department_name",
         title: "所属院系"
     }]
 
-    const collegeNames = store.getState().collegeNames
+    let collegeNames = store.getState().collegeNames
 
     // 针对专业类的数据验证函数
-    const validator = data => {
+    let validator = data => {
         // 创建教师类
-        const special = new Special(data)
+        let special = new Special(data)
         // 返回验证结果
         return special.toValid()
     }
 
     // TeacherTable组件
     return () => {
-        const [departmentData, setDepartmentData] = useState([])
-        const inputConfig = [
+        let [departmentData, setDepartmentData] = useState([])
+        let inputConfig = [
             {
                 key: "special_code",
                 item: {
@@ -128,9 +124,9 @@ const SpecialTable = (() => {
         })
 
         // 根据获取的数据转为相应节点
-        const toNode = ({ id, special_code, special_name, college_code }) => {
+        let toNode = ({ id, special_code, special_name, college_code }) => {
             // 创建专业类
-            const special = new Special({
+            let special = new Special({
                 special_code,
                 special_name,
                 college_code
@@ -140,14 +136,14 @@ const SpecialTable = (() => {
             return special
         }
 
-        const name = "page:special_management"
+        let name = "page:special_management"
         // JSX
         return (
             <PageComponent title="专业管理">
                 <Space direction='vertical' size="middle" style={{ width: "100%" }}>
                     <MyTable.TableControl
                         inputConfig={inputConfig}
-                        type={QueryTable.tableKeys.special}
+                        type={QueryTable.tableKeys.TABLE_SPECIAL}
                         tableColumns={columns}
                         validator={validator}
                         name={name}
@@ -156,7 +152,7 @@ const SpecialTable = (() => {
                         <MyTable.UpdateButton
                             name="updateSpecial"
                             tableName={name}
-                            type={QueryTable.tableKeys.special}
+                            type={QueryTable.tableKeys.TABLE_SPECIAL}
                             inputConfig={inputConfig}
                             validator={validator}
                             usePubSub={true}
@@ -165,16 +161,16 @@ const SpecialTable = (() => {
                         <MyTable.DeleteButton
                             name="deleteTeacher"
                             tableName={name}
-                            type={QueryTable.tableKeys.special}
+                            type={QueryTable.tableKeys.TABLE_SPECIAL}
                         />
                     </MyTable.TableControl>
                     <MyTable
                         // 数据类型
-                        type={QueryTable.tableKeys.special}
+                        type={QueryTable.tableKeys.TABLE_SPECIAL}
                         // 表格类信息
                         tableColumns={columns}
                         // 查询的字段
-                        queryColumns={["id", "special_code", "special_name", "college_code"]}
+                        queryColumns={["id", "special_code", "special_name"]}
                         toNode={toNode}
                         name={name}
                     />

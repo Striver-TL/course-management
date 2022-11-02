@@ -45,4 +45,11 @@ h3.title {
     .ant-btn {
         font-size: .3rem !important;
     }
+
+    .ant-modal-body {
+        width: 12rem;
+        transform-origin: 0 0;
+        transform: scale(.8);
+        padding: .35rem .35rem .24rem !important;
+    }
 }

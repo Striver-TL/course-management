@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 21:03:47
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-18 13:52:37
+ * @LastEditTime: 2022-10-05 11:29:05
  * @FilePath: \student-performance\src\components\MyMenu\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -62,20 +62,29 @@ export default function MyMenu() {
   // state
   const userType = store.getState().loginUser.type
   const [loading, setLoading] = useState(true)
+  // 如果现在登录的用户发生了变化则重新加载菜单
   itemUser !== userType && (!loading ? !setLoading(true) : true) && import("@/router/config").then(routes => {
     return routes.default[userType]
   }).then(routes => {
+    // 清空之前的数据
     items.splice(0, items.length)
     // 根据路由筛选菜单选项
     Object.keys(menuItems).forEach(path => {
+      // 如果路由路径配置中有该配置
+      // 从路由函数中找到对应的函数添加到items中
       if (RoutePath.hasKey(path)) {
         Object.keys(routes).forEach(routePath => {
           routePath === path && items.push(menuItems[path])
         })
+        // 如果没有该配置则可能是二级菜单
       } else {
         const item = menuItems[path]
         const children = item.children
-        const result = children.filter(({ key }) => RoutePath.hasKey(key))
+        console.log(item)
+        const routeKeys = Reflect.ownKeys(routes)
+        const result = children.filter(
+          ({ key }) => routeKeys.indexOf(key) !== -1
+        )
         result.length && items.push(setItem(item.key, item.label, item.icon, result))
       }
     })

@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-13 17:05:15
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-19 14:38:20
+ * @LastEditTime: 2022-11-01 14:38:22
  * @FilePath: \student-performance\src\components\MyTable\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -112,8 +112,14 @@ class MyTable extends Component {
         queryColumns: PropTypes.array.isRequired,
         // 展示的数据类型
         type: PropTypes.symbol.isRequired,
+        // 表格名字
         name: PropTypes.string.isRequired,
-        toNode: PropTypes.func.isRequired
+        // 表格数据转为对应组件函数
+        toNode: PropTypes.func.isRequired,
+        // 多表查询
+        joins: PropTypes.object,
+        // 表格的类名
+        className: PropTypes.string
     }
 
     // 构造器
@@ -132,7 +138,7 @@ class MyTable extends Component {
             // 表格数据
             dataSource: [],
             // 数据条件
-            condition: {},
+            likes: {},
             // 被选中的数据id
             selectId: 0
         }
@@ -142,6 +148,8 @@ class MyTable extends Component {
         this.getDataCount = createAnishake(this.getDataCount, 1000, this)
         // 为该表格创建对应的查询数据实例
         this.queryTable = new QueryTable(props.type)
+        // 初始化getRadio
+        this.getRadio = this.getRadio()
     }
     // 配置分页器的选项
     pagination = {
@@ -157,15 +165,15 @@ class MyTable extends Component {
         this.setDataCount()
         // 订阅
         // 条件改变
-        PubSub.subscribe(`${this.props.name}:condition`, (_, { condition, callback }) => {
+        PubSub.subscribe(`${this.props.name}:likes`, (_, { likes, callback }) => {
             // 获取传入的所有条件
-            Reflect.ownKeys(condition).forEach(name => {
+            Reflect.ownKeys(likes).forEach(name => {
                 // 把空的条件删除掉
-                condition[name] === "" && delete condition[name]
+                likes[name] === "" && delete likes[name]
             })
             // 更新条件状态
             this.setState({
-                condition
+                likes
             })
             // 设置数据数量
             this.setDataCount(typeof callback === "function" ? callback : undefined)
@@ -174,13 +182,13 @@ class MyTable extends Component {
         // 订阅
         // 刷新数据
         PubSub.subscribe(`${this.props.name}:reflash`, (_, callback) => {
-            this.setId(0)
+            this.setId(-1)
             this.setDataCount(callback)
         })
     }
     // 
     componentWillUnmount() {
-        PubSub.unsubscribe(`${this.props.name}:condition`)
+        PubSub.unsubscribe(`${this.props.name}:likes`)
         PubSub.unsubscribe(`${this.props.name}:reflash`)
     }
 
@@ -200,6 +208,28 @@ class MyTable extends Component {
         PubSub.publish(`id: ${this.props.name}`, id)
     }
 
+    getRadio () {
+        // 创建一个处理change事件的函数
+        // id为数据id
+        // 通过调用setId方法设置了id，再通过订阅发布将id发布，之后像刷新按钮更新按钮这些组件就会收到id变化从而更改对应state来针对此id的数据进行操作
+        let createRadioHandler = (id) => (e) => {
+            // 选择了此按钮触发
+            if (this.isChecked(e)) {
+                this.setId(id)
+            }
+        }
+        // 创建数组保存所创建的Input组件便于后续操作（例如取消选择状态）
+        let inputs = []
+        let name = this.props.name
+        PubSub.subscribe(`${name}:reflash`, () => inputs.forEach(({ current }) => current.input.checked = false))
+        // 创建并返回一个Input组件并且将组件存放起来
+        return function (id) {
+            let ref = React.createRef()
+            inputs.push(ref)
+            return <Input type="radio" ref={ref} name={name} onChange={createRadioHandler(id)} />
+        }
+    }
+
     // 获取数据
     getData(page, pageSize) {
         const option = {
@@ -208,9 +238,12 @@ class MyTable extends Component {
             // 获取的数据区间
             section: [(page - 1) * pageSize, page * pageSize],
         }
+        if (this.props.joins) {
+            option.joins = this.props.joins
+        }
         // 如果有条件
         // 将条件添加到选项对象中
-        if (Object.getOwnPropertyNames(this.state.condition).length) option.condition = this.state.condition
+        if (Object.getOwnPropertyNames(this.state.likes).length) option.likes = this.state.likes
         // 调用获取方法
         this.queryTable.getData(option)
             .then(({ data }) => {
@@ -221,12 +254,7 @@ class MyTable extends Component {
                     // toNode是外部传入的函数，将数据进行二次包装
                     const data = (result || []).map(item => {
                         const obj = Object.assign(this.props.toNode(item), { id: item.id })
-                        const name = this.props.name
-                        obj.select = <Input type="radio" name={name} onChange={((id) => (e) => {
-                            if (this.isChecked(e)) {
-                                this.setId(id)
-                            }
-                        })(obj.id)} />
+                        obj.select = this.getRadio(obj.id)
                         return obj
                     })
                     // 表格未加载
@@ -279,6 +307,7 @@ class MyTable extends Component {
                 const data = result.data
                 // 成功获取
                 if (data.success) {
+                    message.success(`成功获取${data.result.id}条数据`)
                     // 设置数据条数
                     this.setState({
                         total: data.result.id,
@@ -327,7 +356,7 @@ class MyTable extends Component {
                 ?
                 // 表格
                 <Table
-                    className="teng-table"
+                    className={`teng-table ${this.props.className ? this.props.className : ""}`}
                     bordered
                     loading={loading}
                     // 表格在翻页时候
@@ -666,7 +695,10 @@ class UpdateButton extends Component {
         // 验证结果
         const validResult = this.props.validator(data)
         // 验证失败弹窗警告
-        if (validResult.err) return message.error(validResult.message)
+        if (validResult.err) {
+            setLoading(false)
+            return message.error(validResult.message)
+        }
         // 更新数据
         this.queryTable.updateData({
             // 条件对象
@@ -936,10 +968,10 @@ class TableFilter extends Component {
         // 发布
         PubSub.publish(
             // 条件改变
-            `${this.props.name}:condition`,
+            `${this.props.name}:likes`,
             {
                 // 条件对象
-                condition: {
+                likes: {
                     [column]: keyword
                 },
                 // 给订阅者提供加载完毕函数

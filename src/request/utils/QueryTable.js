@@ -2,25 +2,43 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-16 15:52:57
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-15 16:01:52
+ * @LastEditTime: 2022-11-01 14:39:23
  * @FilePath: \student-performance\src\request\utils\queryTable.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import axios from '../index'
 import tableKeys from '../config/tableKeys'
 
+// 数据库表名键值对：键->表名
 const tableTypes = {
-    [tableKeys.teacher]: "teachers",
-    [tableKeys.student]: "students",
-    [tableKeys.course]: "courses",
-    [tableKeys.select]: "selects",
-    [tableKeys.classroom]: "classrooms",
-    [tableKeys.classplan]: "classplans",
-    [tableKeys.arrangement]: "arrangements",
-    [tableKeys.building]: "buildings",
-    [tableKeys.special]: "specials",
-    [tableKeys.department]: "departments",
-    [tableKeys.college]: "colleges"
+    // 教师表
+    [tableKeys.TABLE_TEACHER]: "teachers",
+    // 学生表
+    [tableKeys.TABLE_STUDENT]: "students",
+    // 课程表
+    [tableKeys.TABLE_COURSE]: "courses",
+    // 选课表
+    [tableKeys.TABLE_SELECT]: "selects",
+    // 教室表
+    [tableKeys.TABLE_CLASSROOM]: "classrooms",
+    // 教室安排表
+    [tableKeys.TABLE_CLASSPLAN]: "classplans",
+    // 课程实施表
+    [tableKeys.TABLE_ARRANGEMENT]: "arrangements",
+    // 教学楼表
+    [tableKeys.TABLE_BUILDING]: "buildings",
+    // 专业表
+    [tableKeys.TABLE_SPECIAL]: "specials",
+    // 院系表
+    [tableKeys.TABLE_DEPARTMENT]: "departments",
+    // 学院表
+    [tableKeys.TABLE_COLLEGE]: "colleges",
+    // 选课计划表
+    [tableKeys.TABLE_SELECTPLAN]: "selectplans",
+    // 选课课程表
+    [tableKeys.TABLE_SELECTCOURSE]: "selectcourses",
+    // 用户表
+    [tableKeys.TABLE_USER]: "users"
 }
 
 class QueryTable {
@@ -128,3 +146,5 @@ class QueryTable {
 }
 
 export default QueryTable
+
+export const tableType = tableTypes

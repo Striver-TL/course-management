@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-15 09:06:31
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-01 16:05:32
+ * @LastEditTime: 2022-11-02 09:11:53
  * @FilePath: \student-performance\src\components\InfoCard\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,7 +11,7 @@ import { Card, Alert, Spin } from 'antd';
 import PropTypes from 'prop-types'
 
 import './index.scss';
-import { tableValues, isTableKeys } from '../../request/config/tableKeys';
+import tableKeys, { tableValues, isTableKeys } from '../../request/config/tableKeys';
 import QueryTable from '../../request/utils/QueryTable'
 
 const InfoCard = (props) => {
@@ -23,10 +23,10 @@ const InfoCard = (props) => {
         if (isTableKeys(type)) {
             const key = tableValues[type]
             getComponentFunc = {
-                teacher: () => import("@/components/InfoCard/components/TeacherCard"),
-                student: () => import("@/components/InfoCard/components/StudentCard"),
-                classroom: () => import("@/components/InfoCard/components/ClassroomCard"),
-                course: () => import("@/components/InfoCard/components/CourseCard")
+                [tableValues[tableKeys.TABLE_TEACHER]]: () => import("@/components/InfoCard/components/TeacherCard"),
+                [tableValues[tableKeys.TABLE_STUDENT]]: () => import("@/components/InfoCard/components/StudentCard"),
+                [tableValues[tableKeys.TABLE_CLASSROOM]]: () => import("@/components/InfoCard/components/ClassroomCard"),
+                [tableValues[tableKeys.TABLE_COURSE]]: () => import("@/components/InfoCard/components/CourseCard")
             }[key]
         }
 

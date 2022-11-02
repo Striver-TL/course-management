@@ -2,14 +2,14 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 19:44:06
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-18 15:09:16
+ * @LastEditTime: 2022-09-26 16:35:34
  * @FilePath: \student-performance\src\pages\home\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { Routes, Route } from 'react-router-dom'
-import { Layout, Row, Col, Avatar, Dropdown, Button, Space, Menu, Modal, Alert, Drawer } from 'antd'
+import { Layout, Row, Col, Avatar, Dropdown, Space, Menu, Modal, Alert, Drawer } from 'antd'
 import { UserOutlined, DownOutlined } from '@ant-design/icons'
 import MyMenu from '@/components/MyMenu'
 import RouteComponent from "@/router/routes"
@@ -54,15 +54,40 @@ browerType({
   mobile() {
     MenuComponent = () => {
       const [open, setOpen] = useState(false)
-      const showDrawer = () => {
-        setOpen(true)
-      }
+      const [isLoading, setIsLoading] = useState(true)
+      useEffect(() => {
+        if (isLoading) {
+          (() => {
+            let time,
+              pageX = 0,
+              pageY = 0,
+              isRight = false
+            document.addEventListener("touchstart", e => {
+              if (window.scrollX) {
+                time = -Infinity
+              } else {
+                time = e.timeStamp
+              }
+              pageX = e.touches[0].pageX
+              pageY = e.touches[0].pageY
+            })
+            document.addEventListener("touchmove", e => {
+              isRight = e.touches[0].pageX > pageX && Math.abs(e.touches[0].pageY - pageY) < 30
+            })
+            document.addEventListener("touchend", e => {
+              if (isRight && e.timeStamp - time >= 100 && e.timeStamp - time <= 500) {
+                setOpen(true)
+              }
+            })
+            setIsLoading(false)
+          })()
+        }
+      })
       const hideDrawer = () => {
         setOpen(false)
       }
       return (
         <>
-          <Button onClick={showDrawer}>导航</Button>
           <Drawer
             title="导航"
             closable={true}
@@ -115,7 +140,7 @@ export default function Home() {
 
   return (
     <>
-      { MenuComponent && <MenuComponent /> }
+      {MenuComponent && <MenuComponent />}
       <Layout className='home' style={{
         height: "100%"
       }}>

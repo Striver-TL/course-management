@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 23:19:43
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-18 16:33:32
+ * @LastEditTime: 2022-10-26 08:26:59
  * @FilePath: \student-performance\src\pages\home\admin\teacher\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,9 +18,9 @@ import PageComponent from '../../../../components/PageComponent';
 
 // 教师表格组件
 // 用于展示和操作教师信息
-const DepartmentTable = (() => {
+let DepartmentTable = (() => {
     // 教师表格列信息
-    const columns = [{
+    let columns = [{
         key: "department_code",
         dataIndex: "department_code",
         title: "院系代码"
@@ -34,9 +34,9 @@ const DepartmentTable = (() => {
         title: "所属学院"
     }]
 
-    const collegeNames = store.getState().collegeNames
+    let collegeNames = store.getState().collegeNames
 
-    const inputConfig = [
+    let inputConfig = [
         {
             key: "department_code",
             item: {
@@ -83,19 +83,19 @@ const DepartmentTable = (() => {
         }
     ]
     // 针对院系类的数据验证函数
-    const validator = data => {
+    let validator = data => {
         // 创建教师类
-        const department = new Department(data)
+        let department = new Department(data)
         // 返回验证结果
         return department.toValid()
     }
 
-    const name = "page:department_management"
+    let name = "page:department_management"
 
     // 根据获取的数据转为相应节点
-    const toNode = ({ id, department_code, department_name, college_code }) => {
+    let toNode = ({ id, department_code, department_name, college_code }) => {
         // 创建院系类
-        const department = new Department({
+        let department = new Department({
             department_code,
             department_name,
             college_code
@@ -112,7 +112,7 @@ const DepartmentTable = (() => {
                 <Space direction='vertical' size="middle" style={{ width: "100%" }}>
                     <MyTable.TableControl
                         inputConfig={inputConfig}
-                        type={QueryTable.tableKeys.department}
+                        type={QueryTable.tableKeys.TABLE_DEPARTMENT}
                         tableColumns={columns}
                         validator={validator}
                         name={name}
@@ -121,19 +121,19 @@ const DepartmentTable = (() => {
                         <MyTable.UpdateButton
                             name="updateDepartment"
                             tableName={name}
-                            type={QueryTable.tableKeys.department}
+                            type={QueryTable.tableKeys.TABLE_DEPARTMENT}
                             inputConfig={inputConfig}
                             validator={validator}
                         />
                         {/* 删除院系信息按钮 */}
                         <MyTable.DeleteButton
                             tableName={name}
-                            type={QueryTable.tableKeys.department}
+                            type={QueryTable.tableKeys.TABLE_DEPARTMENT}
                         />
                     </MyTable.TableControl>
                     <MyTable
                         // 数据类型
-                        type={QueryTable.tableKeys.department}
+                        type={QueryTable.tableKeys.TABLE_DEPARTMENT}
                         // 表格类信息
                         tableColumns={columns}
                         // 查询的字段

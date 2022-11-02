@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-13 20:54:12
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-18 12:13:32
+ * @LastEditTime: 2022-09-21 16:43:48
  * @FilePath: \student-performance\src\pages\login\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -141,7 +141,14 @@ const Login = () => {
                         <Form.Item
                             label="密码"
                             name="password"
-                            rules={[{ required: true, message: '请输入你的密码' }]}
+                            rules={
+                                [
+                                    { 
+                                        required: true, 
+                                        message: '请输入你的密码'
+                                    }
+                                ]
+                            }
                             onChange={changeHandler(setPassword)}
                             value={password}
                         >

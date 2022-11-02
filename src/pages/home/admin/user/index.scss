@@ -1,0 +1,9 @@
+.user-state {
+    font-size: .3rem;
+    &.user-state-normal {
+        color: green;
+    }
+    &.user-state-frozon {
+        color: #333;
+    }
+}

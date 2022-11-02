@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 23:19:43
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-18 18:30:21
+ * @LastEditTime: 2022-10-26 08:28:30
  * @FilePath: \student-performance\src\pages\home\admin\student\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -21,9 +21,9 @@ import PageComponent from '../../../../components/PageComponent';
 
 // 学生表格组件
 // 用于展示和操作学生信息
-const StudentTable = (() => {
+let StudentTable = (() => {
     // 学生表格列信息
-    const columns = [{
+    let columns = [{
         key: "sno",
         dataIndex: "sno",
         title: "学号"
@@ -38,19 +38,19 @@ const StudentTable = (() => {
     }]
 
     // 针对学生类的数据验证函数胡
-    const validator = data => {
+    let validator = data => {
         // 创建学生类
-        const student = new Student(data)
+        let student = new Student(data)
         // 返回验证结果
         return student.toValid()
     }
 
     // StudentTable组件
     return () => {
-        const name = "page:student_management"
-        const [specialOptions, setSpecialOptions] = useState([])
+        let name = "page:student_management"
+        let [specialOptions, setSpecialOptions] = useState([])
 
-        const inputConfig = [
+        let inputConfig = [
             {
                 key: "sno",
                 item: {
@@ -141,8 +141,8 @@ const StudentTable = (() => {
                     type: "select",
                     placeholder: "请选择学院",
                     onChange: value => {
-                        const departmentNames = store.getState().departmentNames[value] || {}
-                        const specialNames = store.getState().specialNames
+                        let departmentNames = store.getState().departmentNames[value] || {}
+                        let specialNames = store.getState().specialNames
                         setSpecialOptions(
                             Reflect
                                 .ownKeys(departmentNames)
@@ -162,7 +162,7 @@ const StudentTable = (() => {
                         )
                     },
                     options: (() => {
-                        const collegeNames = store.getState().collegeNames
+                        let collegeNames = store.getState().collegeNames
                         return Reflect.ownKeys(collegeNames).map(name => ({ label: collegeNames[name], value: name }))
                     })()
                 }
@@ -186,16 +186,16 @@ const StudentTable = (() => {
         });
 
         // 根据获取的数据转为相应节点
-        const toNode = ({ id, sno, sname, gender }) => {
+        let toNode = ({ id, sno, sname, gender }) => {
             // 创建学生类
-            const student = new Student({
+            let student = new Student({
                 sno,
                 sname,
                 gender
             })
             student.key = id
             // 
-            student.gender = <Tag color={gender === "0" ? "pink" : "blue"}>{student.genderLabel}</Tag>
+            student.gender = <Tag color={gender === "0" ? "pink" : "blue"}>{student.gender === "0" ? "女" : "男"}</Tag>
             return student
         }
 
@@ -205,7 +205,7 @@ const StudentTable = (() => {
                 <Space direction='vertical' size="middle" style={{ width: "100%" }}>
                     <MyTable.TableControl
                         inputConfig={inputConfig}
-                        type={QueryTable.tableKeys.student}
+                        type={QueryTable.tableKeys.TABLE_STUDENT}
                         tableColumns={columns}
                         validator={validator}
                         name={name}
@@ -213,13 +213,13 @@ const StudentTable = (() => {
                         {/* 查看学生信息按钮 */}
                         <MyTable.SeeInfoButton
                             tableName={name}
-                            type={QueryTable.tableKeys.student}
+                            type={QueryTable.tableKeys.TABLE_STUDENT}
                         />
                         {/* 更新学生信息按钮 */}
                         <MyTable.UpdateButton
                             tableName={name}
                             name="updateStudent"
-                            type={QueryTable.tableKeys.student}
+                            type={QueryTable.tableKeys.TABLE_STUDENT}
                             inputConfig={inputConfig}
                             validator={validator}
                             usePubSub={true}
@@ -227,12 +227,12 @@ const StudentTable = (() => {
                         {/* 删除学生信息按钮 */}
                         <MyTable.DeleteButton
                             tableName={name}
-                            type={QueryTable.tableKeys.student}
+                            type={QueryTable.tableKeys.TABLE_STUDENT}
                         />
                     </MyTable.TableControl>
                     <MyTable
                         // 数据类型
-                        type={QueryTable.tableKeys.student}
+                        type={QueryTable.tableKeys.TABLE_STUDENT}
                         // 表格类信息
                         tableColumns={columns}
                         // 查询的字段

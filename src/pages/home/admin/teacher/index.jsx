@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 23:19:43
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-18 17:42:35
+ * @LastEditTime: 2022-10-26 08:29:15
  * @FilePath: \student-performance\src\pages\home\admin\teacher\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -22,9 +22,9 @@ import PageComponent from '../../../../components/PageComponent';
 
 // 教师表格组件
 // 用于展示和操作教师信息
-const TeacherTable = (() => {
+let TeacherTable = (() => {
     // 教师表格列信息
-    const columns = [{
+    let columns = [{
         key: "tno",
         dataIndex: "tno",
         title: "教师号"
@@ -39,20 +39,27 @@ const TeacherTable = (() => {
     }]
 
     // 针对教师类的数据验证函数
-    const validator = data => {
+    let validator = data => {
         // 创建教师类
-        const teacher = new Teacher(data)
+        let teacher = new Teacher(data)
         // 返回验证结果
-        return teacher.toValid()
+        return teacher.toValid({
+            tno: "教工号格式有误",
+            tname: "教师名格式有误",
+            gender: "性别格式有误",
+            birthday: "生日格式有误",
+            college_code: "学院代码格式有误",
+            department_code: "院系代码格式有误"
+        })
     }
 
 
     // TeacherTable组件
     return () => {
-        const [departmentOptions, setDepartmentOptions] = useState([])
-        const name = "page:teacher_management"
+        let [departmentOptions, setDepartmentOptions] = useState([])
+        let name = "page:teacher_management"
 
-        const inputConfig = [
+        let inputConfig = [
             {
                 key: "tno",
                 item: {
@@ -144,12 +151,12 @@ const TeacherTable = (() => {
                     type: "select",
                     placeholder: "请选择学院",
                     options: (() => {
-                        const collegeNames = store.getState().collegeNames
+                        let collegeNames = store.getState().collegeNames
                         return Reflect.ownKeys(collegeNames)
                             .map(name => ({ value: name, label: collegeNames[name] }))
                     })(),
                     onChange(key) {
-                        const departmentNames = store.getState().departmentNames[key]
+                        let departmentNames = store.getState().departmentNames[key]
                         setDepartmentOptions(Reflect.ownKeys(departmentNames || {}).map(name => ({
                             value: name,
                             label: departmentNames[name]
@@ -177,16 +184,16 @@ const TeacherTable = (() => {
         });
 
         // 根据获取的数据转为相应节点
-        const toNode = ({ tno, tname, gender }) => {
+        let toNode = ({ tno, tname, gender }) => {
             // 创建教师类
-            const teacher = new Teacher({
+            let teacher = new Teacher({
                 tno,
                 tname,
                 gender
             })
             teacher.key = tno
             // 
-            teacher.gender = <Tag color={gender === "0" ? "pink" : "blue"}>{teacher.genderLabel}</Tag>
+            teacher.gender = <Tag color={gender === "0" ? "pink" : "blue"}>{gender === "0" ? "女" : "男"}</Tag>
             return teacher
         }
 
@@ -196,21 +203,21 @@ const TeacherTable = (() => {
                 <Space direction='vertical' size="middle" style={{ width: "100%" }}>
                     <MyTable.TableControl
                         inputConfig={inputConfig}
-                        type={QueryTable.tableKeys.teacher}
+                        type={QueryTable.tableKeys.TABLE_TEACHER}
                         tableColumns={columns}
                         validator={validator}
                         name={name}
                     >
                         {/* 查看教师信息按钮 */}
                         <MyTable.SeeInfoButton
-                            type={QueryTable.tableKeys.teacher}
+                            type={QueryTable.tableKeys.TABLE_TEACHER}
                             tableName={name}
                         />
                         {/* 更新教师信息按钮 */}
                         <MyTable.UpdateButton
                             name="updateTeacher"
                             tableName={name}
-                            type={QueryTable.tableKeys.teacher}
+                            type={QueryTable.tableKeys.TABLE_TEACHER}
                             inputConfig={inputConfig}
                             validator={validator}
                             usePubSub={true}
@@ -218,12 +225,12 @@ const TeacherTable = (() => {
                         {/* 删除教师信息按钮 */}
                         <MyTable.DeleteButton
                             tableName={name}
-                            type={QueryTable.tableKeys.teacher}
+                            type={QueryTable.tableKeys.TABLE_TEACHER}
                         />
                     </MyTable.TableControl>
                     <MyTable
                         // 数据类型
-                        type={QueryTable.tableKeys.teacher}
+                        type={QueryTable.tableKeys.TABLE_TEACHER}
                         // 表格类信息
                         tableColumns={columns}
                         // 查询的字段

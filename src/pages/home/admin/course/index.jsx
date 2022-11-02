@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 23:19:43
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-18 16:37:26
+ * @LastEditTime: 2022-10-26 08:26:37
  * @FilePath: \course-performance\src\pages\home\admin\course\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -17,9 +17,9 @@ import PageComponent from '../../../../components/PageComponent';
 
 // 课程表格组件
 // 用于展示和操作课程信息
-const CourseTable = (() => {
+let CourseTable = (() => {
     // 课程表格列信息
-    const columns = [{
+    let columns = [{
         key: "cno",
         dataIndex: "cno",
         title: "课程号"
@@ -42,16 +42,16 @@ const CourseTable = (() => {
     }]
 
     // 针对课程类的数据验证函数胡
-    const validator = data => {
+    let validator = data => {
         // 创建课程类
-        const course = new Course(data)
+        let course = new Course(data)
         // 返回验证结果
         return course.toValid()
     }
 
-    const tableName = "page:course_management"
+    let tableName = "page:course_management"
 
-    const inputConfig = [
+    let inputConfig = [
         {
             key: "cno",
             item: {
@@ -123,12 +123,12 @@ const CourseTable = (() => {
         }
     ]
 
-    const requireds = Course.getRequired()
-    const types = Course.getType()
+    let requireds = Course.getRequired()
+    let types = Course.getType()
     // 根据获取的数据转为相应节点
-    const toNode = ({ id, cno, name, credit, required, type }) => {
+    let toNode = ({ id, cno, name, credit, required, type }) => {
         // 创建课程类
-        const course = new Course({
+        let course = new Course({
             cno,
             name,
             credit,
@@ -152,7 +152,7 @@ const CourseTable = (() => {
             <Space direction='vertical' size="middle" style={{ width: "100%" }}>
                 <MyTable.TableControl
                     inputConfig={inputConfig}
-                    type={QueryTable.tableKeys.course}
+                    type={QueryTable.tableKeys.TABLE_COURSE}
                     tableColumns={columns}
                     validator={validator}
                     name={tableName}
@@ -160,25 +160,25 @@ const CourseTable = (() => {
                     {/* 查看课程信息按钮 */}
                     <MyTable.SeeInfoButton
                         tableName={tableName}
-                        type={QueryTable.tableKeys.course}
+                        type={QueryTable.tableKeys.TABLE_COURSE}
                     />
                     {/* 更新课程信息按钮 */}
                     <MyTable.UpdateButton
                         name="updateCourse"
                         tableName={tableName}
-                        type={QueryTable.tableKeys.course}
+                        type={QueryTable.tableKeys.TABLE_COURSE}
                         inputConfig={inputConfig}
                         validator={validator}
                     />
                     {/* 删除课程信息按钮 */}
                     <MyTable.DeleteButton
                         tableName={tableName}
-                        type={QueryTable.tableKeys.course}
+                        type={QueryTable.tableKeys.TABLE_COURSE}
                     />
                 </MyTable.TableControl>
                 <MyTable
                     // 数据类型
-                    type={QueryTable.tableKeys.course}
+                    type={QueryTable.tableKeys.TABLE_COURSE}
                     // 表格类信息
                     tableColumns={columns}
                     // 查询的字段

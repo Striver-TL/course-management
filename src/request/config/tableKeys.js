@@ -2,22 +2,25 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-31 16:31:52
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-04 19:38:48
+ * @LastEditTime: 2022-11-01 14:39:04
  * @FilePath: \student-performance\src\request\config\tableKeys.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 const tableKeys = {
-    teacher: Symbol("teacher"),
-    student: Symbol("student"),
-    course: Symbol("course"),
-    select: Symbol("select"),
-    classroom: Symbol("classroom"),
-    classplan: Symbol("classplan"),
-    arrangement: Symbol("arrangement"),
-    building: Symbol("building"),
-    special: Symbol("special"),
-    department: Symbol("department"),
-    college: Symbol("college")
+    TABLE_TEACHER: Symbol("teacher"),
+    TABLE_STUDENT: Symbol("student"),
+    TABLE_COURSE: Symbol("course"),
+    TABLE_SELECT: Symbol("select"),
+    TABLE_CLASSROOM: Symbol("classroom"),
+    TABLE_CLASSPLAN: Symbol("classplan"),
+    TABLE_ARRANGEMENT: Symbol("arrangement"),
+    TABLE_BUILDING: Symbol("building"),
+    TABLE_SPECIAL: Symbol("special"),
+    TABLE_DEPARTMENT: Symbol("department"),
+    TABLE_COLLEGE: Symbol("college"),
+    TABLE_SELECTPLAN: Symbol("selectplan"),
+    TABLE_SELECTCOURSE: Symbol("selectcourse"),
+    TABLE_USER: Symbol("user")
 }
 
 export default tableKeys

@@ -1,0 +1,20 @@
+.select-count-pie {
+    width: 50%;
+    height: 400px;
+}
+
+@media screen and (max-device-width: 767px) {
+    .teng-table {
+        &.select-table {
+            table {
+                table-layout: auto;
+            }
+        }
+    }
+
+    .select-count-pie {
+        width: 9rem;
+        margin: 0 auto;
+        height: 8rem;
+    }
+}
