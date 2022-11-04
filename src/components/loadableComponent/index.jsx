@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-05 16:32:37
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-24 11:19:01
+ * @LastEditTime: 2022-11-04 15:27:30
  * @FilePath: \student-performance\src\components\LoadableComponent\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -73,8 +73,11 @@ const createDelayComponent = () => {
  * @returns { Vnode } 一个具备懒加载组件的渲染结果
  */
 const loadableComponent = loader => {
-    const LoadableComponent = React.lazy(loader)
+    // 通过React.lazy创建一个具有异步加载组件的组件
+    const LoadableComponent = React.lazy(loader);
+    // 创建一个用于延迟加载组件的组件
     const DelayComponent = createDelayComponent();
+    // 返回延迟加载React.lazy创建的组件
     return <DelayComponent component={<LoadableComponent />} />
 }
 

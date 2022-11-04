@@ -2,16 +2,16 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-09-18 13:48:13
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-02 08:36:47
+ * @LastEditTime: 2022-11-04 09:25:19
  * @FilePath: \student-performance\src\pages\home\admin\arrangement\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { useState } from 'react'
 import { Button, Tag, Space } from "antd"
 
-import PageComponent from "../../../../components/PageComponent";
-import MyTable from "../../../../components/MyTable";
-import tableKeys from "../../../../request/config/tableKeys";
+import PageComponent from "@/components/PageComponent";
+import MyTable from "@/components/MyTable";
+import tableKeys from "@/request/config/tableKeys";
 import QueryTable, { tableType } from "@/request/utils/QueryTable"
 import Arrangement from "@/model/Arrangement"
 import browserType from "@/utils/browserType"
@@ -71,7 +71,7 @@ let toNode = (data) => {
 
 let validator = (data) => {
     let arrangement = new Arrangement(data)
-    let validResult = arrangement.toValid({
+    return arrangement.toValid({
         cno: "课程号格式有误",
         tno: "教工号格式有误",
         week_start: "起始周格式有误",
@@ -113,6 +113,8 @@ let CourseArrangement = () => {
             placholder: "选择教师",
             options: []
         }
+    }, {
+        key: "max_count"
     }, {
         key: "week_start",
         item: {

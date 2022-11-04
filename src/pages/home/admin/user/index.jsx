@@ -2,21 +2,23 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-09-17 08:24:54
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-02 08:16:56
+ * @LastEditTime: 2022-11-04 15:30:33
  * @FilePath: \student-performance\src\pages\home\admin\user\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React from "react";
-import PageComponent from "../../../../components/PageComponent";
+import PageComponent from "@/components/PageComponent";
 import MyTable from "@/components/MyTable";
 import { Space, Tag } from "antd";
 
+import User from "@/model/User";
 import isFrozen from "./utils/isFrozen";
-import tableKeys from "../../../../request/config/tableKeys";
+import tableKeys from "@/request/config/tableKeys";
 import getTimeFromMillsecond from "@/utils/getTimeFromMillsecond";
 
 import "./index.scss"
 
+// 表格列信息
 const tableColumns = [{
     key: "type",
     dataIndex: "type",
@@ -31,9 +33,10 @@ const tableColumns = [{
     title: "状  态"
 }]
 
-const queryColumns = ["username", "type", "frozen_duration", "frozen_time"]
+// 指定从数据库获取的字段
+const queryColumns = ["id", "username", "type", "frozen_duration", "frozen_time"]
 const toNode = (user) => {
-    user.key = user.id = user.type + user.username
+    user.key = user.id
     user.type = [<Tag color="red">管理</Tag>, <Tag color="blue">教师</Tag>, <Tag color="#E564DC">学生</Tag>][user.type]
     if (isFrozen(user.frozen_time, user.frozen_duration)) {
         let time = getTimeFromMillsecond(new Date(user.frozen_time).getTime() + user.frozen_duration)
@@ -44,9 +47,7 @@ const toNode = (user) => {
     return user
 }
 
-const validator = user => {
-
-}
+const validator = user => new User(user).toValid()
 
 const inputConfig = [{
     key: "username",
@@ -94,7 +95,7 @@ const inputConfig = [{
         }]
     },
     input: {
-        type: "passwordd",
+        type: "password",
         placeholder: "请输入密码"
     }
 }]
@@ -109,7 +110,12 @@ const UserManagement = () => {
                 name={tableName}
                 validator={validator}
                 inputConfig={inputConfig}
-            />
+            >
+                <MyTable.DeleteButton
+                    tableName={tableName}
+                    type={tableKeys.TABLE_USER}
+                />
+            </MyTable.TableControl>
             <MyTable
                 type={tableKeys.TABLE_USER}
                 name={tableName}

@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-13 17:05:15
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-01 14:38:22
+ * @LastEditTime: 2022-11-04 22:49:16
  * @FilePath: \student-performance\src\components\MyTable\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -205,7 +205,7 @@ class MyTable extends Component {
     }
 
     setId(id) {
-        PubSub.publish(`id: ${this.props.name}`, id)
+        PubSub.publish(`${this.props.name}:id`, id)
     }
 
     getRadio () {
