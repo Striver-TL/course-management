@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-20 14:43:40
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-27 17:14:47
+ * @LastEditTime: 2023-03-19 16:42:11
  * @FilePath: \student-performance-server\model\Validator.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -27,12 +27,13 @@ class Validator {
         for (let key of ownKeys) {
             // 先判断有没有该属性的验证器
             // 有的话在验证是否通过
-            if (validators[this.constructor.name].hasOwnProperty(key) && !validators[this.constructor.name][key].call(this, this[key])) return {
+            if (validators[this.constructor.name].hasOwnProperty(key) && !validators[this.constructor.name][key].call(validators[this.constructor.name], this[key])) return {
                 err: true,
                 key,
                 message: errMessages && errMessages[key]
             }
         }
+        this.afterValid && this.afterValid()
         return {
             err: false
         }

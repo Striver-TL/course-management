@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 17:47:20
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-26 11:04:56
+ * @LastEditTime: 2023-03-15 18:39:19
  * @FilePath: \student-performance\src\App.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -12,13 +12,15 @@ import { Navigate } from 'react-router-dom'
 import { Routes } from 'react-router-dom'
 import { Spin } from 'antd'
 
-import loadableComponent from './components/loadableComponent';
-
-import { actionTypes, store } from './redux/store';
+import loadableComponent from '@/components/loadableComponent';
+import loginApi from "@/apis/base/login";
+import { actionTypes, store } from '@/redux/store';
 import './App.scss';
+import { setAuthorization } from "@/utils/http"
 
 let component = null
 let path = null
+
 /**
  * 编程式路由组件，用于动态处理路由
  * @author Striver-TL
@@ -31,9 +33,7 @@ const RouteComponent = () => {
   if (loading) {
     // 先判断是否已经登录
     // 导入有关请求登录的对象
-    import("@/request/utils/login.js")
-      // 成功导入模块就向后台发送获取登录用户信息的请求
-      .then(module => module.default.getLoginUser())
+    loginApi.infoHandle()
       // 处理后台返回的数据
       .then(({ data }) => {
         // success为用户是否登录
@@ -71,6 +71,7 @@ const RouteComponent = () => {
 }
 
 function App() {
+  setAuthorization(window.localStorage.getItem("token"));
   return (
     <Routes>
       <Route path="*" element={<RouteComponent />} />

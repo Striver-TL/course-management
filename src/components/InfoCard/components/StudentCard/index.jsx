@@ -2,13 +2,13 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-09-01 16:05:54
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-02 08:54:05
+ * @LastEditTime: 2023-03-15 20:29:53
  * @FilePath: \student-performance\src\components\InfoCard\components\StudentCard\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { Component } from "react";
 import PropTypes from 'prop-types'
-import { message, Tag, Row, Col, Alert, Spin, Divider, Space, Avatar, Card } from 'antd'
+import { message, Tag, Row, Col, Alert, Spin, Divider, Space, Card } from 'antd'
 import { BankTwoTone, ManOutlined, WomanOutlined, PhoneTwoTone, MailTwoTone } from '@ant-design/icons'
 
 import Student from "@/model/Student";
@@ -17,6 +17,7 @@ const Meta = Card.Meta
 
 class StudentCard extends Component {
     static propTypes = {
+        url: PropTypes.string.isRequired,
         queryTable: PropTypes.object.isRequired,
         id: PropTypes.number.isRequired
     }
@@ -35,7 +36,7 @@ class StudentCard extends Component {
     }
 
     getData() {
-        this.props.queryTable.getData({
+        this.props.queryTable.queryHandle(this.props.url, {
             columns: ["sno", "sname", "gender", "birthday", "phone", "email"],
             condition: {
                 id: this.props.id
@@ -71,7 +72,6 @@ class StudentCard extends Component {
         return (
             <>
                 <Meta
-                    avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
                     title={
                         <Space size="small" direction="vertical">
                             <div>{studentInfos.sname}&nbsp;
@@ -84,7 +84,7 @@ class StudentCard extends Component {
                             </div>
                             {
                                 studentInfos.age
-                                    ? <Tag color="lime">{ studentInfos.age }岁</Tag>
+                                    ? <Tag color="lime">{studentInfos.age}岁</Tag>
                                     : <Tag color="#ccc">年龄未知</Tag>
                             }
                         </Space>

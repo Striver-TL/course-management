@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-13 20:54:12
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-21 16:43:48
+ * @LastEditTime: 2023-03-15 18:29:30
  * @FilePath: \student-performance\src\pages\login\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,8 +10,10 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Menu, Space, Alert } from 'antd'
 import { useNavigate } from 'react-router'
 
-import UserType from '../../model/UserType';
-import { actionTypes, store } from '../../redux/store';
+import UserType from '@/model/UserType';
+import { actionTypes, store } from '@/redux/store';
+import loginApi from "@/apis/base/login"
+import { setAuthorization } from "@/utils/http"
 
 import './index.scss'
 const userKeys = Object.keys(UserType.USER_TYPES).reverse()
@@ -74,14 +76,9 @@ const Login = () => {
 
     // 表单提交事件处理函数
     const toSubmit = () => {
-        import("../../request/utils/login").then(RequestLogin => {
-            setLogging(true)
-            // 发送登录请求
-            RequestLogin.default.login({
-                username,
-                password,
-                type: selectType
-            }).then(({ data }) => {
+        setLogging(true);
+        loginApi.loginHandle(username, password, selectType)
+            .then(({ data }) => {
                 // 处理返回的结果
                 setLogging(false)
                 const { success } = data
@@ -94,6 +91,8 @@ const Login = () => {
                         type: actionTypes.LOGIN_USER,
                         data: user
                     })
+                    window.localStorage.setItem("token", data.token);
+                    setAuthorization(data.token)
                     navigate(`/home`, {
                         replace: true
                     })
@@ -103,8 +102,6 @@ const Login = () => {
                     setErrorMessage(data.message)
                 }
             })
-
-        })
     }
 
 
@@ -143,8 +140,8 @@ const Login = () => {
                             name="password"
                             rules={
                                 [
-                                    { 
-                                        required: true, 
+                                    {
+                                        required: true,
                                         message: '请输入你的密码'
                                     }
                                 ]

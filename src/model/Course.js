@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-16 14:53:37
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-24 08:05:52
+ * @LastEditTime: 2022-11-22 16:00:42
  * @FilePath: \student-performance\src\model\Course.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -20,13 +20,13 @@ const validator = {
         return /^[\u4e00-\u9fa5()a-zA-z]{1,50}$/.test(name)
     },
     credit(credit) {
-        return typeof credit === "number" && credit > 0
+        return (typeof credit === "number" && credit > 0)
     },
     required(char) {
-        return typeof char === "string" && required[+char]
+        return (typeof char === "string" && required[+char])
     },
     type(char) {
-        return typeof char === "string" && type[+char]
+        return (typeof char === "string" && type[+char])
     }
 }
 

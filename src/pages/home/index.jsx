@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 19:44:06
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-26 16:35:34
+ * @LastEditTime: 2023-03-15 18:16:50
  * @FilePath: \student-performance\src\pages\home\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,7 +14,9 @@ import { UserOutlined, DownOutlined } from '@ant-design/icons'
 import MyMenu from '@/components/MyMenu'
 import RouteComponent from "@/router/routes"
 import './index.scss'
-import browerType from '@/utils/browserType'
+import browerType from '@/utils/base/browserType'
+import loginApi from "@/apis/base/login";
+import { onUnAuthorization, offUnAuthorization } from "../../utils/http"
 
 const { Header, Sider, Content } = Layout
 
@@ -22,9 +24,7 @@ function QuitLogin() {
   const [isModalVisible, setModalVisible] = useState(false)
   const navigate = useNavigate()
   const handleOk = () => {
-    import("../../request/utils/login").then(RequestLogin => {
-      return RequestLogin.default.cancelLogin()
-    }).then(({ data }) => {
+    loginApi.cancelHandle().then(({ data }) => {
       if (data.success) {
         navigate("/login", {
           replace: true
@@ -116,6 +116,14 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [flag, setFlag] = useState(false)
   const [count, setCount] = useState(0)
+  const navigate = useNavigate();
+  useEffect(() => {
+    const directFunc = () => navigate("/login", {
+      replace: true
+    });
+    onUnAuthorization(directFunc)
+    return () => offUnAuthorization(directFunc)
+  })
   loading && import("@/core")
     .then(module => {
       const { install } = module

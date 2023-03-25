@@ -2,22 +2,21 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-13 17:05:15
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-04 22:49:16
+ * @LastEditTime: 2023-03-14 17:49:21
  * @FilePath: \student-performance\src\components\MyTable\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { Component } from "react"
 import PropTypes from "prop-types"
 import { Table, Button, message, Empty, Modal, Row, Col, Input, Space, Select } from "antd"
-import QueryTable from "@/request/utils/QueryTable"
-import createAnishake from "@/utils/createAntishake"
-import createThrottle from "@/utils/createThrottle"
+import createAnishake from "@/utils/base/createAntishake"
+import createThrottle from "@/utils/base/createThrottle"
 import PubSub from 'pubsub-js'
 
 import "./index.scss"
 
 import alertInput, { alertInputTypes } from "../alertInput"
-import browerType from "../../utils/browserType"
+import browerType from "@/utils/base/browserType"
 
 // 用于记录是否为PC客户端
 let isClient
@@ -41,27 +40,26 @@ browerType({
 class TableControl extends Component {
     // 限制props
     static propTypes = {
-        // 数据类别
-        type: PropTypes.symbol.isRequired,
         // 数据验证器
         validator: PropTypes.func.isRequired,
         // 输入框配置
         inputConfig: PropTypes.array.isRequired,
         // 表格名
-        name: PropTypes.string.isRequired
+        name: PropTypes.string.isRequired,
+        insertHandle: PropTypes.func.isRequired
     }
     render() {
         // 获取对应props
-        const { type, validator, inputConfig, name } = this.props
+        const { validator, inputConfig, name } = this.props
         // 可拓展节点列表
         const nodeList = [
             // 添加数据按钮
             <AddInfoButton
                 inputConfig={inputConfig}
-                type={type}
                 validator={validator}
                 name={name}
                 key="add"
+                insertHandle={this.props.insertHandle}
             />,
             // 刷新数据按钮
             <ReflashButton
@@ -109,9 +107,7 @@ class MyTable extends Component {
         // 表格列配置
         tableColumns: PropTypes.array.isRequired,
         // 获取数据字段配置
-        queryColumns: PropTypes.array.isRequired,
-        // 展示的数据类型
-        type: PropTypes.symbol.isRequired,
+        queryColumns: PropTypes.array,
         // 表格名字
         name: PropTypes.string.isRequired,
         // 表格数据转为对应组件函数
@@ -119,7 +115,11 @@ class MyTable extends Component {
         // 多表查询
         joins: PropTypes.object,
         // 表格的类名
-        className: PropTypes.string
+        className: PropTypes.string,
+        // queryAPI
+        queryHandle: PropTypes.func.isRequired,
+        // 
+        countHandle: PropTypes.func.isRequired
     }
 
     // 构造器
@@ -143,11 +143,9 @@ class MyTable extends Component {
             selectId: 0
         }
         // 获取数据方法改为防抖方法（1秒内只能成功调用1次）
-        this.getData = createAnishake(this.getData, 1000, this)
+        this.getData = createAnishake(this.getData, 400, this)
         // 获取数据数量方法改为防抖方法（1秒内只能成功调用1次）
-        this.getDataCount = createAnishake(this.getDataCount, 1000, this)
-        // 为该表格创建对应的查询数据实例
-        this.queryTable = new QueryTable(props.type)
+        this.getDataCount = createAnishake(this.getDataCount, 400, this)
         // 初始化getRadio
         this.getRadio = this.getRadio()
     }
@@ -208,7 +206,7 @@ class MyTable extends Component {
         PubSub.publish(`${this.props.name}:id`, id)
     }
 
-    getRadio () {
+    getRadio() {
         // 创建一个处理change事件的函数
         // id为数据id
         // 通过调用setId方法设置了id，再通过订阅发布将id发布，之后像刷新按钮更新按钮这些组件就会收到id变化从而更改对应state来针对此id的数据进行操作
@@ -233,11 +231,10 @@ class MyTable extends Component {
     // 获取数据
     getData(page, pageSize) {
         const option = {
-            // 需要获取的字段
-            columns: this.props.queryColumns,
             // 获取的数据区间
             section: [(page - 1) * pageSize, page * pageSize],
         }
+        this.props.queryColumns && (option.columns = this.props.queryColumns)
         if (this.props.joins) {
             option.joins = this.props.joins
         }
@@ -245,7 +242,7 @@ class MyTable extends Component {
         // 将条件添加到选项对象中
         if (Object.getOwnPropertyNames(this.state.likes).length) option.likes = this.state.likes
         // 调用获取方法
-        this.queryTable.getData(option)
+        this.props.queryHandle(option)
             .then(({ data }) => {
                 const { success, result } = data
                 // 成功获取数据
@@ -266,18 +263,18 @@ class MyTable extends Component {
                         current: page,
                         // 取消表格加载
                         loading: false
-                    })
+                    });
                 } else {
-                    message.error(data.message)
+                    message.error(data.message);
                 }
             })
             // 获取失败
-            .catch(() => {
-                message.error("数据获取失败")
+            .catch((e) => {
+                message.error("数据获取失败");
                 // 表格未加载
                 this.setState({
                     loading: false
-                })
+                });
             })
     }
 
@@ -301,7 +298,7 @@ class MyTable extends Component {
         const condition = this.state.condition
         if (typeof condition === "object" && condition !== null) option.condition = condition
         // 从后端获取数据
-        this.queryTable.getCount(option)
+        this.props.countHandle(option)
             .then(result => {
                 // 获取返回的数据
                 const data = result.data
@@ -315,10 +312,10 @@ class MyTable extends Component {
                     })
                 } else {
                     // 抛出错误
-                    return Promise.reject()
+                    message.error(data.message)
                 }
             })
-            .catch(() => {
+            .catch((e) => {
                 // 给出警告
                 message.error("获取数据条数时出错")
             })
@@ -388,8 +385,6 @@ class MyTable extends Component {
 class AddInfoButton extends Component {
     // 限制prop
     static propTypes = {
-        // 数据类型
-        type: PropTypes.symbol.isRequired,
         // Form组件的配置文件
         inputConfig: PropTypes.array.isRequired,
         // 验证数据的方法
@@ -397,13 +392,12 @@ class AddInfoButton extends Component {
         // Form名字
         name: PropTypes.string.isRequired,
         // 
+        insertHandle: PropTypes.func.isRequired
 
     }
 
     constructor(props) {
         super(props)
-        // 添加指定类型的获取数据的实例对象
-        this.queryTable = new QueryTable(props.type)
         // 组件状态
         this.state = {
             // 表单控件配置
@@ -467,13 +461,12 @@ class AddInfoButton extends Component {
                     // 如果未通过验证
                     if (validResult.err) {
                         // 给出错误提示
-                        message.error("添加的数据中有错误")
+                        message.error(validResult.message)
                         // 取消加载中状态
                         setLoading(false)
                     } else {
                         // 向后台发送插入数据请求
-                        new QueryTable(this.props.type)
-                            .insertData(data)
+                        this.props.insertHandle(data)
                             .then(({ data }) => {
                                 // 添加成功
                                 if (data.success) {
@@ -518,7 +511,7 @@ class AddInfoButton extends Component {
 class SeeInfoButton extends Component {
     // 限制prop
     static propTypes = {
-        // 数据类别
+        queryHandle: PropTypes.func.isRequired,
         type: PropTypes.symbol.isRequired,
         // 表格的名字
         tableName: PropTypes.string.isRequired
@@ -543,7 +536,7 @@ class SeeInfoButton extends Component {
     componentDidMount() {
         // 订阅id变化
         PubSub.subscribe(
-            `id: ${this.props.tableName}`,
+            `${this.props.tableName}:id`,
             (_, id) => {
                 // 更改id状态
                 this.setState({
@@ -556,7 +549,7 @@ class SeeInfoButton extends Component {
     // 组件即将被卸载时
     componentWillUnmount() {
         // 取消订阅
-        PubSub.unsubscribe(`id: ${this.props.tablaName}`)
+        PubSub.unsubscribe(`${this.props.tablaName}:id`)
     }
 
     // 查看信息方法
@@ -583,6 +576,7 @@ class SeeInfoButton extends Component {
                         <InfoCard
                             // 数据类型
                             type={this.props.type}
+                            queryHandle={this.props.queryHandle}
                             // 数据id
                             id={this.state.id}
                         />
@@ -627,8 +621,6 @@ class SeeInfoButton extends Component {
 class UpdateButton extends Component {
     // 限制prop
     static propTypes = {
-        // 数据类型
-        type: PropTypes.symbol.isRequired,
         // Form组件的配置文件
         inputConfig: PropTypes.array.isRequired,
         // 验证数据的方法
@@ -637,14 +629,14 @@ class UpdateButton extends Component {
         name: PropTypes.string.isRequired,
         tableName: PropTypes.string.isRequired,
         // 是否使用发布订阅来更新数据
-        usePubSub: PropTypes.bool
+        usePubSub: PropTypes.bool,
+        updateHandle: PropTypes.func.isRequired,
+        queryHandle: PropTypes.func.isRequired
     }
 
     // 构造器
     constructor(props) {
         super(props)
-        // 
-        this.queryTable = new QueryTable(props.type)
         this.state = {
             inputConfig: props.inputConfig,
             isShow: false,
@@ -657,7 +649,7 @@ class UpdateButton extends Component {
     }
 
     componentDidMount() {
-        PubSub.subscribe(`id: ${this.props.tableName}`, (_, id) => {
+        PubSub.subscribe(`${this.props.tableName}:id`, (_, id) => {
             this.setState({
                 id
             })
@@ -673,7 +665,7 @@ class UpdateButton extends Component {
 
     componentWillUnmount() {
         PubSub.unsubscribe(`update: ${this.props.name}`)
-        PubSub.unsubscribe(`id: ${this.props.tableName}`)
+        PubSub.unsubscribe(`${this.props.tableName}:id`)
     }
 
     componentDidUpdate(_, state) {
@@ -700,7 +692,7 @@ class UpdateButton extends Component {
             return message.error(validResult.message)
         }
         // 更新数据
-        this.queryTable.updateData({
+        this.props.updateHandle({
             // 条件对象
             condition: {
                 // id为指定id
@@ -736,7 +728,7 @@ class UpdateButton extends Component {
     showUpdate() {
         const { inputConfig } = this.state
         // 导入用于弹出Form组件的模块
-        this.queryTable.getData({
+        this.props.queryHandle({
             // 设置获取的字段名
             columns: (
                 // 过滤掉不作为Sql查询的配置
@@ -817,8 +809,8 @@ class DeleteButton extends Component {
     static propTypes = {
         // 表格名字
         tableName: PropTypes.string.isRequired,
-        // 信息的类型
-        type: PropTypes.symbol.isRequired,
+        // 
+        deleteHandle: PropTypes.func.isRequired
     }
 
     // 构造器
@@ -830,12 +822,38 @@ class DeleteButton extends Component {
         }
         // 修改this指向
         this.clickHandle = this.clickHandle.bind(this)
-        this.queryTable = new QueryTable(props.type)
     }
 
+    deleteHandle(modal, ...args) {
+        this.props.deleteHandle(...args)
+
+            // 成功返回数据
+            .then(({ data }) => {
+                // 删除成功
+                if (data.success) {
+                    message.success("数据删除成功")
+                    PubSub.publish(`${this.props.tableName}:reflash`)
+                } else {
+                    // 删除失败
+                    message.error(data.message)
+                }
+            })
+            // 未成功返回数据
+            .catch(() => {
+                // error
+                message.error("删除数据时出错")
+            })
+            // 
+            .finally(() => {
+                this.setState({
+                    loading: false
+                })
+                modal.destroy()
+            })
+    }
 
     componentDidMount() {
-        PubSub.subscribe(`id: ${this.props.tableName}`, (_, id) => {
+        PubSub.subscribe(`${this.props.tableName}:id`, (_, id) => {
             this.setState({
                 id
             })
@@ -843,7 +861,7 @@ class DeleteButton extends Component {
     }
 
     componentWillUnmount() {
-        PubSub.unsubscribe(`id: ${this.props.tableName}`)
+        PubSub.unsubscribe(`${this.props.tableName}:id`)
     }
 
     // 点击事件处理函数
@@ -856,35 +874,12 @@ class DeleteButton extends Component {
             // 确认
             .then((modal) => {
                 // 调用删除信息接口
-                this.queryTable.deleteData({
+                this.deleteHandle(modal, {
                     condition: {
                         id: this.state.id,
                         is_delete: "0"
                     }
                 })
-                    // 成功返回数据
-                    .then(({ data }) => {
-                        // 删除成功
-                        if (data.success) {
-                            message.success("数据删除成功")
-                            PubSub.publish(`${this.props.tableName}:reflash`)
-                        } else {
-                            // 删除失败
-                            message.error(data.message)
-                        }
-                    })
-                    // 未成功返回数据
-                    .catch(() => {
-                        // error
-                        message.error("删除数据时出错")
-                    })
-                    // 
-                    .finally(() => {
-                        this.setState({
-                            loading: false
-                        })
-                        modal.destroy()
-                    })
             })
             // 取消
             .catch(() => {
@@ -1040,7 +1035,7 @@ class TableFilter extends Component {
 // 刷新按钮组件
 class ReflashButton extends Component {
     // prop限制
-    static propsTypes = {
+    static propTypes = {
         // 表格的标识
         name: PropTypes.string.isRequired
     }

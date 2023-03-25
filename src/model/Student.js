@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-09-02 08:16:03
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-27 18:38:34
+ * @LastEditTime: 2022-11-22 15:58:50
  * @FilePath: \student-performance\src\model\Student.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,7 +18,7 @@ const validator = {
         return /^(?:[\u4e00-\u9fa5]+)(?:·[\u4e00-\u9fa5]+)*$|^[a-zA-Z0-9]+\s?[.·\-()a-zA-Z]*[a-zA-Z]+$/.test(name)
     },
     gender(char) {
-        return typeof char === "string" && (char === "0" || char === "1")
+        return !!(typeof char === "string" && (char === "0" || char === "1"))
     },
     birthday(format) {
         let date
@@ -40,7 +40,7 @@ const validator = {
     },
     special_code(code) {
         const specials = store.getState().specialNames[this.college_code]
-        return specials && Reflect.ownKeys(specials).indexOf(code) !== -1
+        return !!(specials && Reflect.ownKeys(specials).indexOf(code) !== -1)
     },
     college_code(code) {
         const colleges = store.getState().collegeNames

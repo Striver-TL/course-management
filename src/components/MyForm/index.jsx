@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-08 16:38:25
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-26 17:29:12
+ * @LastEditTime: 2023-03-16 22:11:19
  * @FilePath: \student-performance\src\components\MyForm\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,6 +14,8 @@ import { Form, Input, Button, Select, DatePicker } from 'antd'
 
 import "./index.scss"
 import { useRef, useEffect } from 'react'
+import SelectModal from './components/SelectModal'
+import PubSub from 'pubsub-js'
 
 const noSelect = {
     value: "",
@@ -135,6 +137,15 @@ function MyForm(props) {
                             initialValues[key] = moment(initialValues[key])
                         )
                     break;
+                case "modal":
+                    PubSub.subscribe(`selectModal:${item.name}`, (_, id) => {
+                        form.current.setFieldsValue({
+                            [key]: id.toString()
+                        })
+                        console.log(form.current.setFieldsValue)
+                    })
+                    inputNode = <SelectModal {...input} name={item.name} />
+                    break;
                 default:
                     inputNode = <Input {...input} />
             }
@@ -157,6 +168,7 @@ function MyForm(props) {
             name={name}
             ref={form}
             onFinish={(data) => {
+                for (let key in data) (items.filter(item => item.key === key)[0] || {}).notSql && delete data[key]
                 setLoading(true)
                 finish(data, setLoading)
             }}

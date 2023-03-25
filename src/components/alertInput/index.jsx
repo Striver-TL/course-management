@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-11 19:32:25
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-16 21:36:06
+ * @LastEditTime: 2023-03-19 15:21:35
  * @FilePath: \student-performance\src\components\alertInput\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -16,9 +16,7 @@ const createMyFormComponent = (modal) => {
     return (props) => {
         const [inputConfig, setInputConfig] = useState(props.inputConfig)
         const { name, initialValues } = props
-        if (!componentStack[name]) {
-            componentStack[name] = setInputConfig
-        }
+        componentStack[name] || (componentStack[name] = setInputConfig)
         return <MyForm
             items={inputConfig}
             name={name}
@@ -66,11 +64,7 @@ const alertInput = (type, config) => {
         } else {
             componentStack[name](inputConfig)
         }
-    } else if (type === alertInputType.update) {
-        if (componentStack[name]) {
-            componentStack[name](inputConfig)
-        }
-    }
+    } else if (type === alertInputType.update) componentStack[name] && componentStack[name](inputConfig)
 }
 
 export default alertInput

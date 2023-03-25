@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-05 16:32:37
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-04 15:27:30
+ * @LastEditTime: 2022-11-28 16:17:39
  * @FilePath: \student-performance\src\components\LoadableComponent\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -27,7 +27,7 @@ const createDelayComponent = () => {
         useEffect(() => {
             loading && setTimeout(() => {
                 setLoading(false)
-            }, 400)
+            }, 300)
             // 组件被销毁时，释放掉DelayComponent
             return () => DelayComponent = null
         })

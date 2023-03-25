@@ -1,0 +1,15 @@
+$color: rgb(0, 181, 222);
+
+.addTeacherBtn {
+
+    &,
+    &:hover {
+        background: $color;
+        border-color: $color;
+        color: #FFF;
+    }
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
