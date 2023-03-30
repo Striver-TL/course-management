@@ -53,3 +53,10 @@ h3.title {
         padding: .35rem .35rem .24rem !important;
     }
 }
+
+.box-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

@@ -22,11 +22,11 @@ class Api {
     constructor() {
         this.queryTable = new QueryTable(tableKeys.TABLE_SELECTPLAN);
     }
-    insertHandle = async data => await axios.post(`${urls.insert}?${QueryTable.toQueryParam(data)}`);
+    insertHandle = async data => await axios.put(`${urls.insert}?${QueryTable.toQueryParam(data)}`);
 
-    updateHandle = async (option, data) => await axios.post(`${urls.update}?${QueryTable.toQueryParam(option)}`, data);
+    updateHandle = async (option, data) => await axios.put(`${urls.update}?${QueryTable.toQueryParam(option)}`, data);
 
-    deleteHandle = async option => await axios.post(`${urls.delete}?${QueryTable.toQueryParam(option)}`);
+    deleteHandle = async option => await axios.delete(`${urls.delete}?${QueryTable.toQueryParam(option)}`);
 
     queryHandle = async option => await this.queryTable.queryHandle(urls.query, option);
     countHandle = async option => await this.queryTable.countHandle(urls.count, option);

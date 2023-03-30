@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-16 15:52:57
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2023-03-14 16:35:12
+ * @LastEditTime: 2023-03-30 23:24:26
  * @FilePath: \student-performance\src\request\utils\queryTable.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -38,7 +38,8 @@ const tableTypes = {
     // 选课课程表
     [tableKeys.TABLE_SELECTCOURSE]: "selectcourses",
     // 用户表
-    [tableKeys.TABLE_USER]: "users"
+    [tableKeys.TABLE_USER]: "users",
+    [tableKeys.TABLE_GRADE]: "grades"
 }
 
 class QueryTable {
@@ -70,7 +71,9 @@ class QueryTable {
             ...option,
             table: tableTypes[this.table]
         }
-        return axios(`${url}?${QueryTable.toQueryParam(option)}`, this.options)
+        return axios.post(`${url}?${QueryTable.toQueryParam(option)}`, {
+            ...this.options
+        })
     }
 
     /**
@@ -84,7 +87,7 @@ class QueryTable {
             ...option,
             table: tableTypes[this.table]
         }
-        return axios(`${url}?${QueryTable.toQueryParam(option)}`, this.options)
+        return axios.get(`${url}?${QueryTable.toQueryParam(option)}`)
     }
 
     /**
@@ -93,10 +96,7 @@ class QueryTable {
      */
     insertHandle(url, data) {
         if (!tableTypes[this.table]) throw new Error("QueryTable: 找不到指定的'tableKey'")
-        return axios(`${url}?table=${tableTypes[this.table]}`, {
-            data,
-            ...this.options
-        })
+        return axios.put(`${url}?table=${tableTypes[this.table]}`, data)
     }
 
     /**
@@ -106,7 +106,7 @@ class QueryTable {
      */
     deleteHandle(url, condition) {
         if (!tableTypes[this.table]) throw new Error("QueryTable: 找不到指定的'tableKey'")
-        return axios(`${url}?table=${tableTypes[this.table]}&${QueryTable.toQueryParam(condition)}`, this.options);
+        return axios.delete(`${url}?table=${tableTypes[this.table]}&${QueryTable.toQueryParam(condition)}`);
     }
 
     /**
@@ -121,10 +121,7 @@ class QueryTable {
             ...option,
             table: tableTypes[this.table]
         }
-        return axios(`${url}?${QueryTable.toQueryParam(option)}`, {
-            data,
-            ...this.options
-        })
+        return axios.put(`${url}?${QueryTable.toQueryParam(option)}`, data)
     }
 
     /**

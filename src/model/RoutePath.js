@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-11 15:56:54
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-09-24 08:18:02
+ * @LastEditTime: 2023-03-30 16:17:57
  * @FilePath: \student-performance\src\model\RoutePath.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -27,12 +27,6 @@ export default class MenuItemKey {
     static RESULT_MANAGEMENT = "result_management";
     // 成绩查询
     static RESULT_QUERY = "result_query"
-    // 作业管理
-    static HOMEWORK_MANAGEMENT = "homework_management"
-    // 我的作业
-    static HOMEWORK_MINE = "homework_mine"
-    // 我的课程
-    static COURSE_MINE = "course_mine"
     // 教室管理
     static CLASSROOM_MANAGEMENT = "classroom_management"
     // 在线选课
@@ -49,6 +43,8 @@ export default class MenuItemKey {
     static SELECT_MANAGEMENT = "select_management"
     // 用户管理
     static USER_MANAGEMENT = "user_management"
+    // 我的信息
+    static USER_INFOMATION = "user_infomation"
 
     // 
     static COURSE_ARRANGEMENT = "course_arrangement"

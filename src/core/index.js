@@ -2,26 +2,19 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-09-04 19:25:42
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-23 09:16:08
+ * @LastEditTime: 2023-03-27 13:41:43
  * @FilePath: \student-performance\src\core\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import QueryTable from "@/utils/http/utils/QueryTable"
 import tableKeys from "@/utils/http/config/tableKeys"
 import { store, actionTypes } from "@/redux/store"
+import axios from "../utils/http/index";
 
 const taskStack = [
     async () => {
         try {
-            let { data } = await new QueryTable(tableKeys.TABLE_COLLEGE).queryHandle("/global/college", {
-                // 获取的字段
-                columns: [
-                    // 学院代码
-                    "college_code",
-                    // 学院名字
-                    "college_name"
-                ]
-            })
+            let { data } = await axios.get("/global/college")
             let { success, result } = data
             if (success) {
                 store.dispatch({
@@ -35,17 +28,7 @@ const taskStack = [
                     )
                 })
 
-                data = (await new QueryTable(tableKeys.TABLE_DEPARTMENT).queryHandle("/global/department", {
-                    // 获取数据的字段
-                    columns: [
-                        // 系代码
-                        "department_code",
-                        // 系名字
-                        "department_name",
-                        // 学院代码
-                        "college_code"
-                    ]
-                })).data;
+                data = (await axios.get("global/department")).data;
                 [success, result] = [data.success, data.result];
                 if (success) {
                     store.dispatch({
@@ -63,17 +46,7 @@ const taskStack = [
                     });
 
                     // 查询专业
-                    data = (await new QueryTable(tableKeys.TABLE_SPECIAL).queryHandle("/global/special", {
-                        // 获取的字段
-                        columns: [
-                            // 专业代码
-                            "special_code",
-                            // 专业名字
-                            "special_name",
-                            // 系代码
-                            "department_code"
-                        ]
-                    })).data;
+                    data = (await axios.get("/global/special")).data;
                     [success, result] = [data.success, data.result];
                     // 成功获取到数据
                     if (success) {

@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-09-17 08:14:33
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2023-03-20 22:36:21
+ * @LastEditTime: 2023-03-31 00:06:37
  * @FilePath: \student-performance\src\pages\home\admin\select\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -17,6 +17,7 @@ import api from "../../../apis/admin/select";
 import "./index.scss"
 import MyTable from "@/components/MyTable";
 import tableKeys from "../../../utils/http/config/tableKeys";
+import SelectCourse from "../../../model/SelectCourse";
 let inputConfig = [{
     key: "name",
     item: {
@@ -282,6 +283,16 @@ let AddSelectCourse = () => {
                 });
             }
         }
+
+        let grades = await createApi(tableKeys.TABLE_GRADE).queryHandle({
+            columns: ["id", "label"],
+            condition: {
+                is_delete: "0"
+            }
+        })
+
+        grades = grades.data.result
+
         let getInputConfig = () => [{
             key: "选课计划",
             item: {
@@ -350,6 +361,23 @@ let AddSelectCourse = () => {
                 placeholder: "请选择专业",
                 options: specials.concat()
             }
+        }, {
+            key: "指定年级",
+            item: {
+                name: 'gid',
+                label: "指定年级",
+                rules: [{
+                    required: false
+                }]
+            },
+            input: {
+                type: "select",
+                placeholder: "请选择年级",
+                options: grades.map(item => ({
+                    value: item.id,
+                    label: item.label
+                }))
+            }
         }];
         alertInput(alertInputTypes.create, {
             title: "添加选课课程",
@@ -358,7 +386,8 @@ let AddSelectCourse = () => {
                 setLoading(true);
                 setIsLoading(true);
                 try {
-                    let { data: insertData } = await api.selectcourse.insertHandle(data)
+                    let selectCourse = new SelectCourse(data);
+                    let { data: insertData } = await api.selectcourse.insertHandle(selectCourse)
                     if (!insertData.success) message.error(insertData.message)
                     else {
                         message.success("添加选课课程成功")
@@ -395,13 +424,17 @@ let SelectManagement = () => {
         dataIndex: "count",
         title: "选课人数"
     }, {
-        key: "college_name",
-        dataIndex: "college_name",
+        key: "cid",
+        dataIndex: "cid",
         title: "限制学院"
     }, {
-        key: "special_name",
-        dataIndex: "special_name",
+        key: "pid",
+        dataIndex: "pid",
         title: "限制专业"
+    }, {
+        key: "label",
+        dataIndex: "label",
+        title: "限制年级"
     }]
 
     let toNode = data => {

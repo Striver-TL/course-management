@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-31 16:31:52
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-24 15:03:44
+ * @LastEditTime: 2023-03-30 23:21:57
  * @FilePath: \student-performance\src\request\config\tableKeys.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -20,7 +20,8 @@ const tableKeys = {
     TABLE_COLLEGE: Symbol("college"),
     TABLE_SELECTPLAN: Symbol("selectplan"),
     TABLE_SELECTCOURSE: Symbol("selectcourse"),
-    TABLE_USER: Symbol("user")
+    TABLE_USER: Symbol("user"),
+    TABLE_GRADE: Symbol("grade")
 }
 
 export default tableKeys

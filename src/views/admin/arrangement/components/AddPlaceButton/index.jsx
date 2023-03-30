@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-11-23 11:32:21
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-28 16:16:16
+ * @LastEditTime: 2023-03-29 17:09:53
  * @FilePath: \student-performance\src\views\admin\arrangement\components\AddPlaceButton\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -148,7 +148,6 @@ function AddPlaceButton(props) {
                 values.start_section = +start_section
                 values.end_section = +end_section
                 values.aid = id
-                console.log(values)
                 // 先对数据进行验证
                 const coursePlan = new CoursePlan(values)
                 const validResult = coursePlan.toValid({

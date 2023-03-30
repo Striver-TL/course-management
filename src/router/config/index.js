@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-08-05 17:59:08
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-14 14:32:18
+ * @LastEditTime: 2023-03-30 16:28:01
  * @FilePath: \student-performance\src\router\config\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -43,13 +43,13 @@ const config = {
     },
     [UserType.TEACHER]: {
         [RoutePath.HOME]: () => import("@/views/base"),
-        [RoutePath.COURSE_MANAGEMENT]: () => import("@/views/teacher/course"),
+        [RoutePath.USER_INFOMATION]: () => import("@/views/teacher/info"),
         [RoutePath.RESULT_MANAGEMENT]: () => import("@/views/teacher/result")
     },
     [UserType.STUDENT]: {
         [RoutePath.HOME]: () => import("@/views/base"),
         [RoutePath.COURSE_SELECT]: () => import("@/views/student/select"),
-        [RoutePath.COURSE_MINE]: () => import("@/views/student/course"),
+        [RoutePath.USER_INFOMATION]: () => import("@/views/student/info"),
         [RoutePath.RESULT_QUERY]: () => import("@/views/student/result")
     }
 }

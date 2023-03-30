@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-13 20:54:12
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2023-03-15 18:29:30
+ * @LastEditTime: 2023-03-26 11:24:07
  * @FilePath: \student-performance\src\pages\login\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,7 +11,6 @@ import { Form, Input, Button, Menu, Space, Alert } from 'antd'
 import { useNavigate } from 'react-router'
 
 import UserType from '@/model/UserType';
-import { actionTypes, store } from '@/redux/store';
 import loginApi from "@/apis/base/login"
 import { setAuthorization } from "@/utils/http"
 
@@ -83,19 +82,11 @@ const Login = () => {
                 setLogging(false)
                 const { success } = data
                 if (success) {
-                    const user = {
-                        username,
-                        type: selectType
-                    }
-                    store.dispatch({
-                        type: actionTypes.LOGIN_USER,
-                        data: user
-                    })
                     window.localStorage.setItem("token", data.token);
                     setAuthorization(data.token)
-                    navigate(`/home`, {
+                    loginApi.infoHandle().finally(() => navigate(`/home`, {
                         replace: true
-                    })
+                    }));
                 }
                 else {
                     setError(true)

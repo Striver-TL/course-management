@@ -2,12 +2,12 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 21:03:47
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-10-05 11:29:05
+ * @LastEditTime: 2023-03-30 12:06:13
  * @FilePath: \student-performance\src\components\MyMenu\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { Menu } from 'antd'
-import { ReconciliationOutlined, InsertRowAboveOutlined, DatabaseOutlined, BarChartOutlined, FormOutlined, ScheduleOutlined, LoadingOutlined, HomeOutlined, EditOutlined, SelectOutlined, UserOutlined } from '@ant-design/icons'
+import { ReconciliationOutlined, InsertRowAboveOutlined, DatabaseOutlined, BarChartOutlined, ScheduleOutlined, LoadingOutlined, HomeOutlined, SelectOutlined, UserOutlined } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router'
 
 import './index.scss'
@@ -42,9 +42,7 @@ const menuItems = {
   [RoutePath.SELECT_MANAGEMENT]: setItem(RoutePath.SELECT_MANAGEMENT, "选课管理", <SelectOutlined />),
   [RoutePath.COURSE_ARRANGEMENT]: setItem(RoutePath.COURSE_ARRANGEMENT, "课程安排", <InsertRowAboveOutlined />),
   [RoutePath.COURSE_SELECT]: setItem(RoutePath.COURSE_SELECT, "在线选课", <SelectOutlined />),
-  [RoutePath.COURSE_MINE]: setItem(RoutePath.COURSE_MINE, "我的课程", <ReconciliationOutlined />),
-  [RoutePath.HOMEWORK_MANAGEMENT]: setItem(RoutePath.HOMEWORK_MANAGEMENT, "作业管理", <FormOutlined />),
-  [RoutePath.HOMEWORK_MINE]: setItem(RoutePath.HOMEWORK_MINE, "我的作业", <EditOutlined />),
+  [RoutePath.USER_INFOMATION]: setItem(RoutePath.USER_INFOMATION, "我的信息", <ReconciliationOutlined />),
   [RoutePath.RESULT_MANAGEMENT]: setItem(RoutePath.RESULT_MANAGEMENT, "成绩管理", <ScheduleOutlined />),
   [RoutePath.RESULT_QUERY]: setItem(RoutePath.RESULT_QUERY, "成绩查询", <BarChartOutlined />)
 }
@@ -80,7 +78,6 @@ export default function MyMenu() {
       } else {
         const item = menuItems[path]
         const children = item.children
-        console.log(item)
         const routeKeys = Reflect.ownKeys(routes)
         const result = children.filter(
           ({ key }) => routeKeys.indexOf(key) !== -1

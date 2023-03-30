@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-09-03 16:18:15
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-25 10:02:12
+ * @LastEditTime: 2023-03-29 17:35:41
  * @FilePath: \student-performance\src\model\Classroom.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -16,7 +16,7 @@ const validator = {
         return this.layer(bid)
     },
     code(code) {
-        return code > 0
+        return +code > 0
     },
     capacity(num) {
         return num > 0
@@ -27,7 +27,7 @@ class Classroom extends Validator {
     constructor(option) {
         super(validator)
         this.layer = +option.layer
-        this.code = +option.code
+        this.code = option.code.toString().replace(/^(?=\d$)/, "0")
         this.bid = +option.bid
         this.capacity = +option.capacity
     }

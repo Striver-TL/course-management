@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-09-02 08:16:03
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-22 15:58:50
+ * @LastEditTime: 2023-03-30 22:50:44
  * @FilePath: \student-performance\src\model\Student.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -20,16 +20,20 @@ const validator = {
     gender(char) {
         return !!(typeof char === "string" && (char === "0" || char === "1"))
     },
+    gid(id) {
+        return +id >= 0
+    },
     birthday(format) {
         let date
         try {
-            if((/Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent))) {
+            if ((/Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent))) {
                 format = format.replace(/-/g, "/")
             }
             date = new Date(format)
-        } catch(e) {
+        } catch (e) {
             return false
         }
+        console.log(date.getTime())
         return !!date.getTime()
     },
     phone(phone) {
@@ -39,12 +43,10 @@ const validator = {
         return typeof email === "string" && /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/g.test(email)
     },
     special_code(code) {
-        const specials = store.getState().specialNames[this.college_code]
-        return !!(specials && Reflect.ownKeys(specials).indexOf(code) !== -1)
+        return this.sno(code);
     },
     college_code(code) {
-        const colleges = store.getState().collegeNames
-        return Reflect.ownKeys(colleges).indexOf(code) !== -1
+        return this.sno(code);
     }
 }
 
@@ -54,6 +56,7 @@ class Student extends Validator {
         this.sno = option.sno
         this.sname = option.sname
         this.gender = option.gender
+        this.gid = option.gid
         if (option.birthday) {
             const date = new Date(option.birthday)
             this.birthday = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`

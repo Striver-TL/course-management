@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 17:47:20
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2023-03-15 18:39:19
+ * @LastEditTime: 2023-03-26 11:20:52
  * @FilePath: \student-performance\src\App.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,13 +14,12 @@ import { Spin } from 'antd'
 
 import loadableComponent from '@/components/loadableComponent';
 import loginApi from "@/apis/base/login";
-import { actionTypes, store } from '@/redux/store';
+import { store } from '@/redux/store';
 import './App.scss';
 import { setAuthorization } from "@/utils/http"
 
 let component = null
 let path = null
-
 /**
  * 编程式路由组件，用于动态处理路由
  * @author Striver-TL
@@ -35,19 +34,7 @@ const RouteComponent = () => {
     // 导入有关请求登录的对象
     loginApi.infoHandle()
       // 处理后台返回的数据
-      .then(({ data }) => {
-        // success为用户是否登录
-        // result为登录的用户信息
-        const { success, result } = data
-        // 登录成功并且有用户信息则进行登录后的路由跳转
-        // 否则加载登录页面
-        if (success && result) {
-          store.dispatch({
-            type: actionTypes.LOGIN_USER,
-            data: result
-          })
-        }
-      }).finally(() => setLoading(false))
+      .finally(() => setLoading(false))
   }
   if (loading) return <Spin className='page-loading' tip="页面加载中..." />
   // 根据分割url获取本次路由的pathname

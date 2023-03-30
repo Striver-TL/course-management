@@ -2,13 +2,14 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-11-16 10:47:20
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2022-11-22 14:04:44
+ * @LastEditTime: 2023-03-26 10:01:39
  * @FilePath: \student-performance\src\apis\admin\user\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import axios from "@/utils/http";
 import QueryTable from "@/utils/http/utils/QueryTable";
 import tableKeys from "@/utils/http/config/tableKeys";
+import crypto from "crypto-browserify";
 
 const urls = {
     frozen: "/admin/frozen",
@@ -40,8 +41,9 @@ class Api {
      * @param { String } type 用户类型
      * @returns { Promise } 接口返回的数据
      */
-    insertHandle(username, password, type) {
-        return axios.post(`${urls.insert}?type=${type}&username=${username}&password=${password}`);
+    insertHandle({ username, password, type }) {
+        password = crypto.createHash("md5").update(password).digest("hex");
+        return axios.put(`${urls.insert}?type=${type}&username=${username}&password=${password}`);
     }
     /**
      * 删除用户
@@ -51,7 +53,7 @@ class Api {
      * @returns { Promise } 处理接口返回的数据
      */
     deleteHandle({ condition }) {
-        return axios.post(`${urls.delete}?id=${condition.id}`)
+        return axios.delete(`${urls.delete}?id=${condition.id}`)
     }
 
     /**

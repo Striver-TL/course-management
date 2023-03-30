@@ -2,7 +2,7 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-10 19:44:06
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2023-03-15 18:16:50
+ * @LastEditTime: 2023-03-30 21:57:46
  * @FilePath: \student-performance\src\pages\home\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -16,7 +16,6 @@ import RouteComponent from "@/router/routes"
 import './index.scss'
 import browerType from '@/utils/base/browserType'
 import loginApi from "@/apis/base/login";
-import { onUnAuthorization, offUnAuthorization } from "../../utils/http"
 
 const { Header, Sider, Content } = Layout
 
@@ -116,14 +115,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [flag, setFlag] = useState(false)
   const [count, setCount] = useState(0)
-  const navigate = useNavigate();
-  useEffect(() => {
-    const directFunc = () => navigate("/login", {
-      replace: true
-    });
-    onUnAuthorization(directFunc)
-    return () => offUnAuthorization(directFunc)
-  })
   loading && import("@/core")
     .then(module => {
       const { install } = module
@@ -168,7 +159,7 @@ export default function Home() {
         </Header>
         <Layout className="layout">
           {routeMenu}
-          <Content className='home-content'>
+          <Content className='home-content' style={{ position: "relative" }}>
             <div className="home-content-inner">
               <Routes>
                 <Route path="*" element={<RouteComponent />} />

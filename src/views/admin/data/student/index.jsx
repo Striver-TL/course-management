@@ -2,14 +2,14 @@
  * @Author: Striver-TL 2806717229@qq.com
  * @Date: 2022-07-14 23:19:43
  * @LastEditors: Striver-TL 2806717229@qq.com
- * @LastEditTime: 2023-03-15 21:09:12
+ * @LastEditTime: 2023-03-30 23:30:08
  * @FilePath: \student-performance\src\pages\home\admin\student\index.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React from 'react';
 
 import MyTable from '@/components/MyTable'
-import { Space, Tag } from 'antd';
+import { Space, Tag, Spin } from 'antd';
 
 import PubSub from 'pubsub-js';
 
@@ -17,10 +17,11 @@ import Student from '@/model/Student'
 import { store } from '@/redux/store'
 import { useState, useEffect } from 'react';
 import PageComponent from '@/components/PageComponent';
-import createApi from '@/apis/admin/data';
+import createApi from '../../../../apis/admin/data';
 import tableKeys from '@/utils/http/config/tableKeys';
 
 const request = createApi(tableKeys.TABLE_STUDENT);
+const gradeApi = createApi(tableKeys.TABLE_GRADE)
 
 // 学生表格组件
 // 用于展示和操作学生信息
@@ -53,14 +54,23 @@ let StudentTable = (() => {
         // 创建学生类
         let student = new Student(data)
         // 返回验证结果
-        return student.toValid()
+        return student.toValid({
+            sno: "学号格式有误",
+            sname: "姓名格式有误",
+            gender: "性别有误",
+            college_code: "学院代码有误",
+            special_code: "专业代码有误",
+            phone: "手机格式有误",
+            email: "邮箱格式有误"
+        })
     }
 
     // StudentTable组件
     return () => {
         let name = "page:student_management"
         let [specialOptions, setSpecialOptions] = useState([])
-
+        let [gradeOptions, setGradeOptions] = useState([])
+        let [isLoading, setIsLoading] = useState(true)
         let inputConfig = [
             {
                 key: "sno",
@@ -106,6 +116,23 @@ let StudentTable = (() => {
                         value: "1",
                         label: "男"
                     }]
+                }
+            },
+            {
+                key: "gid",
+                item: {
+                    name: "gid",
+                    label: "年  级",
+                    rules: [{
+                        required: true
+                    }]
+                },
+                input: {
+                    type: "select",
+                    options: gradeOptions.map(item => ({
+                        value: item.id,
+                        label: item.label
+                    }))
                 }
             },
             {
@@ -191,10 +218,17 @@ let StudentTable = (() => {
                 }
             }
         ]
-
         useEffect(() => {
+            gradeApi.queryHandle({
+                columns: ["id", "label"],
+                condition: {
+                    is_delete: "0"
+                }
+            }).then(({ data }) => setGradeOptions(data.result))
+                .finally(() => setIsLoading(false))
             PubSub.publish("update: updateStudent", inputConfig)
-        });
+        }, [])
+        if (isLoading) return <Spin></Spin>
 
         // 根据获取的数据转为相应节点
         let toNode = ({ id, sno, sname, gender, college_name, special_name }) => {
